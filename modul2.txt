@@ -6,4 +6,8 @@ Rafie Safaraz Aribowo
 Muhammad Addin Zulfikar
 Muhammad Ardhi Arif
 
+<<<<<<< HEAD
 Done
+=======
+Hi!
+>>>>>>> f95199af189f37faf79ec6e9957311d23d9a1fed
