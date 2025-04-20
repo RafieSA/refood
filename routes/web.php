@@ -1,11 +1,15 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RestaurantController; // ← tambahkan ini
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+// route publik yang menampilkan data restoran
+Route::get('/restaurants', [RestaurantController::class, 'index']);
 
 Route::get('/dashboard', function () {
     return view('dashboard');
