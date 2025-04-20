@@ -14,7 +14,8 @@ class IsAdmin
         if (Auth::check() && Auth::user()->is_admin) {
             return $next($request);
         }
-
-        abort(403, 'Access denied.');
+    
+        // Redirect ke login admin jika bukan admin atau belum login
+        return redirect()->route('admin.login')->with('error', 'Access denied. Please login as admin.');
     }
 }

@@ -1,24 +1,32 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\RestaurantController; // ← tambahkan ini
+use App\Http\Controllers\RestaurantController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
+// Frontend routes (User)
+Route::group(['middleware' => 'guest'], function () {
+    Route::get('/', [App\Http\Controllers\RestaurantController::class, 'index'])->name('frontend.home');
+    Route::get('/restaurants', [App\Http\Controllers\RestaurantController::class, 'index'])->name('restaurants.index');
 });
 
-// route publik yang menampilkan data restoran
-Route::get('/restaurants', [RestaurantController::class, 'index']);
+// Default login route (required by Laravel for redirect)
+Route::get('login', function() {
+    return redirect()->route('admin.login');
+})->name('login');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Admin routes
+Route::prefix('admin')->group(function () {
+    // Admin login route
+    Route::get('login', [App\Http\Controllers\Auth\AdminLoginController::class, 'showLoginForm'])->name('admin.login');
+    Route::post('login', [App\Http\Controllers\Auth\AdminLoginController::class, 'login']);
+    Route::post('logout', [App\Http\Controllers\Auth\AdminLoginController::class, 'logout'])->name('admin.logout');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    // Protected admin routes
+    Route::middleware(['auth', 'is_admin'])->group(function () {
+        Route::get('dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
+
+        // CRUD routes for restaurants
+        Route::resource('restaurants', App\Http\Controllers\Admin\RestaurantController::class);
+    });
 });
-
-require __DIR__.'/auth.php';
