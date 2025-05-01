@@ -1,20 +1,20 @@
 <?php
-// filepath: d:\Kuliah\Semester 6\ppl-refood\SI4605-KEL411\app\Http\Controllers\Admin\DashboardController.php
 
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Restaurant;
-use Illuminate\Support\Facades\DB;
+use App\Models\Admin;
+use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
     public function index()
     {
         $totalRestaurants = Restaurant::count();
-        $activeDiscounts = DB::table('restaurants')->whereNotNull('discount')->count();
-        $totalAdmins = DB::table('admins')->count(); // Menggunakan tabel admins
-
+        $activeDiscounts = Restaurant::where('discount_percentage', '>', 0)->count();
+        $totalAdmins = Admin::count();
+        
         return view('admin.dashboard', compact('totalRestaurants', 'activeDiscounts', 'totalAdmins'));
     }
 }

@@ -1,17 +1,61 @@
 <?php
 
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
+
+class Restaurant extends Model
+{
+    use HasFactory;
+
+    protected $keyType = 'string';
+    public $incrementing = false;
+
+    protected $fillable = [
+        'admin_id',
+        'name',
+        'address',
+        'food_name',
+        'food_type',
+        'discount_percentage',
+        'discount_duration_hours',
+        'discount',
+        'photo_url',
+        'opening_hours',
+    ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (!$model->id) {
+                $model->id = (string) Str::uuid();
+            }
+        });
+    }
+
+    // Relationship with Admin
+    public function admin()
+    {
+        return $this->belongsTo(Admin::class);
+    }
+}
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Restaurant;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class RestaurantController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
      */
     public function index()
     {
@@ -21,8 +65,6 @@ class RestaurantController extends Controller
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
      */
     public function create()
     {
@@ -31,28 +73,45 @@ class RestaurantController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'discount' => 'nullable|numeric|min:0|max:100',
+            'address' => 'required|string',
+            'food_name' => 'required|string|max:255',
+            'food_type' => 'required|string|max:255',
+            'discount_percentage' => 'required|numeric|min:0|max:100',
+            'discount' => 'required|numeric|min:0',
+            'discount_duration_hours' => 'required|numeric|min:1',
+            'opening_hours' => 'required|string',
+            'photo' => 'nullable|image|max:2048',
         ]);
 
-        Restaurant::create($request->all());
+        $restaurant = new Restaurant();
+        $restaurant->fill($validated);
+        $restaurant->admin_id = auth()->guard('admins')->id();
 
-        return redirect()->route('restaurants.index')->with('success', 'Restaurant created successfully.');
+        if ($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('public/restaurants');
+            $restaurant->photo_url = Storage::url($path);
+        }
+
+        $restaurant->save();
+
+        return redirect()->route('restaurants.index')->with('success', 'Restaurant created successfully');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Restaurant $restaurant)
+    {
+        return view('admin.restaurants.show', compact('restaurant'));
     }
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Restaurant  $restaurant
-     * @return \Illuminate\Http\Response
      */
     public function edit(Restaurant $restaurant)
     {
@@ -61,34 +120,50 @@ class RestaurantController extends Controller
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Restaurant  $restaurant
-     * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Restaurant $restaurant)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'discount' => 'nullable|numeric|min:0|max:100',
+            'address' => 'required|string',
+            'food_name' => 'required|string|max:255',
+            'food_type' => 'required|string|max:255',
+            'discount_percentage' => 'required|numeric|min:0|max:100',
+            'discount' => 'required|numeric|min:0',
+            'discount_duration_hours' => 'required|numeric|min:1',
+            'opening_hours' => 'required|string',
+            'photo' => 'nullable|image|max:2048',
         ]);
 
-        $restaurant->update($request->all());
+        $restaurant->fill($validated);
 
-        return redirect()->route('restaurants.index')->with('success', 'Restaurant updated successfully.');
+        if ($request->hasFile('photo')) {
+            // Remove old photo if exists
+            if ($restaurant->photo_url && Storage::exists('public' . str_replace('/storage', '', $restaurant->photo_url))) {
+                Storage::delete('public' . str_replace('/storage', '', $restaurant->photo_url));
+            }
+            
+            $path = $request->file('photo')->store('public/restaurants');
+            $restaurant->photo_url = Storage::url($path);
+        }
+
+        $restaurant->save();
+
+        return redirect()->route('restaurants.index')->with('success', 'Restaurant updated successfully');
     }
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Restaurant  $restaurant
-     * @return \Illuminate\Http\Response
      */
     public function destroy(Restaurant $restaurant)
     {
+        // Remove photo if exists
+        if ($restaurant->photo_url && Storage::exists('public' . str_replace('/storage', '', $restaurant->photo_url))) {
+            Storage::delete('public' . str_replace('/storage', '', $restaurant->photo_url));
+        }
+        
         $restaurant->delete();
 
-        return redirect()->route('restaurants.index')->with('success', 'Restaurant deleted successfully.');
+        return redirect()->route('restaurants.index')->with('success', 'Restaurant deleted successfully');
     }
 }

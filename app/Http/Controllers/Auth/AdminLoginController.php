@@ -15,6 +15,9 @@ class AdminLoginController extends Controller
 
     public function login(Request $request)
     {
+        // Log or dump request data for debugging
+        \Log::info($request->all());
+
         $credentials = $request->only('email', 'password');
 
         // Attempt to authenticate using the 'admins' guard
