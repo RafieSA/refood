@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\DashboardController;      // ← tambahkan ini
 Route::group(['middleware' => 'guest'], function () {
     Route::get('/', [App\Http\Controllers\RestaurantController::class, 'index'])->name('frontend.home');
     Route::get('/restaurants', [App\Http\Controllers\RestaurantController::class, 'index'])->name('restaurants.index');
+    Route::get('/restaurants/{id}', [RestaurantController::class, 'show'])->name('restaurants.show');
 });
 
 
