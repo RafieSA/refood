@@ -11,10 +11,12 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $totalRestaurants = Restaurant::count();
-        $activeDiscounts = Restaurant::where('discount_percentage', '>', 0)->count();
-        $totalAdmins = Admin::count();
-        
-        return view('admin.dashboard', compact('totalRestaurants', 'activeDiscounts', 'totalAdmins'));
+        $adminId = auth()->guard('admins')->id();
+
+        // Statistik berdasarkan admin_id
+        $totalRestaurants = Restaurant::where('admin_id', $adminId)->count();
+        $activeDiscounts = Restaurant::where('admin_id', $adminId)->where('discount_percentage', '>', 0)->count();
+
+        return view('admin.dashboard', compact('totalRestaurants', 'activeDiscounts'));
     }
 }

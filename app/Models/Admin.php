@@ -9,7 +9,12 @@ class Admin extends Authenticatable
 {
     use Notifiable;
 
+    // Nonaktifkan timestamps
+    public $timestamps = false;
+
     protected $fillable = [
+        'Restaurant_Name',
+        'Restaurant_Photo',
         'email',
         'password',
     ];
@@ -26,5 +31,10 @@ class Admin extends Authenticatable
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = bcrypt($value);
+    }
+
+    public function restaurants()
+    {
+        return $this->hasMany(Restaurant::class, 'admin_id');
     }
 }

@@ -57,9 +57,24 @@ class RestaurantController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $restaurants = Restaurant::all();
+        $adminId = auth()->guard('admins')->id();
+
+        // Ambil input pencarian
+        $search = $request->input('search');
+
+        // Query restoran berdasarkan admin_id dan pencarian
+        $restaurants = Restaurant::with('admin')
+            ->where('admin_id', $adminId)
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('food_name', 'like', "%{$search}%")
+                      ->orWhere('discount_percentage', 'like', "%{$search}%");
+                });
+            })
+            ->get();
+
         return view('admin.restaurants.index', compact('restaurants'));
     }
 
@@ -77,7 +92,6 @@ class RestaurantController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
             'address' => 'required|string',
             'food_name' => 'required|string|max:255',
             'food_type' => 'required|string|max:255',
@@ -93,8 +107,9 @@ class RestaurantController extends Controller
         $restaurant->admin_id = auth()->guard('admins')->id();
 
         if ($request->hasFile('photo')) {
-            $path = $request->file('photo')->store('public/restaurants');
-            $restaurant->photo_url = Storage::url($path);
+            // Simpan file ke direktori public/restaurants
+            $path = $request->file('photo')->storeAs('restaurants', $request->file('photo')->getClientOriginalName(), 'public');
+            $restaurant->photo_url = '/storage/' . $path; // URL yang dapat diakses
         }
 
         $restaurant->save();
@@ -124,7 +139,6 @@ class RestaurantController extends Controller
     public function update(Request $request, Restaurant $restaurant)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
             'address' => 'required|string',
             'food_name' => 'required|string|max:255',
             'food_type' => 'required|string|max:255',
@@ -138,13 +152,12 @@ class RestaurantController extends Controller
         $restaurant->fill($validated);
 
         if ($request->hasFile('photo')) {
-            // Remove old photo if exists
-            if ($restaurant->photo_url && Storage::exists('public' . str_replace('/storage', '', $restaurant->photo_url))) {
-                Storage::delete('public' . str_replace('/storage', '', $restaurant->photo_url));
+            if ($restaurant->photo_url && Storage::exists('public/' . str_replace('/storage/', '', $restaurant->photo_url))) {
+                Storage::delete('public/' . str_replace('/storage/', '', $restaurant->photo_url));
             }
-            
-            $path = $request->file('photo')->store('public/restaurants');
-            $restaurant->photo_url = Storage::url($path);
+
+            $path = $request->file('photo')->storeAs('restaurants', $request->file('photo')->getClientOriginalName(), 'public');
+            $restaurant->photo_url = '/storage/' . $path;
         }
 
         $restaurant->save();
@@ -157,11 +170,10 @@ class RestaurantController extends Controller
      */
     public function destroy(Restaurant $restaurant)
     {
-        // Remove photo if exists
-        if ($restaurant->photo_url && Storage::exists('public' . str_replace('/storage', '', $restaurant->photo_url))) {
-            Storage::delete('public' . str_replace('/storage', '', $restaurant->photo_url));
+        if ($restaurant->photo_url && Storage::exists('public/' . str_replace('/storage/', '', $restaurant->photo_url))) {
+            Storage::delete('public/' . str_replace('/storage/', '', $restaurant->photo_url));
         }
-        
+
         $restaurant->delete();
 
         return redirect()->route('restaurants.index')->with('success', 'Restaurant deleted successfully');
