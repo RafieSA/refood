@@ -44,3 +44,14 @@ Route::prefix('admin')->group(function () {
     
 });
 
+Route::prefix('super-admin')->group(function () {
+    Route::get('login', [\App\Http\Controllers\Auth\SuperAdminLoginController::class, 'showLoginForm'])->name('super_admin.login');
+    Route::post('login', [\App\Http\Controllers\Auth\SuperAdminLoginController::class, 'login']);
+    Route::post('logout', [\App\Http\Controllers\Auth\SuperAdminLoginController::class, 'logout'])->name('super_admin.logout');
+});
+
+Route::prefix('super-admin')->middleware(['auth:super_admins'])->group(function () {
+    Route::get('dashboard', [\App\Http\Controllers\Admin\SuperAdminDashboardController::class, 'index'])->name('super_admin.dashboard');
+    Route::resource('admins', \App\Http\Controllers\Admin\SuperAdminController::class);
+});
+

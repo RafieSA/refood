@@ -41,9 +41,14 @@ return [
             'provider' => 'users',
         ],
 
-        'admins' => [ // Guard untuk admin
+        'admins' => [
             'driver' => 'session',
             'provider' => 'admins',
+        ],
+
+        'super_admins' => [ // Tambahkan guard untuk Super Admin
+            'driver' => 'session',
+            'provider' => 'super_admins',
         ],
     ],
 
@@ -73,6 +78,11 @@ return [
         'admins' => [ // Provider untuk admin
             'driver' => 'eloquent',
             'model' => App\Models\Admin::class,
+        ],
+
+        'super_admins' => [ // Provider untuk Super Admin
+            'driver' => 'eloquent',
+            'model' => App\Models\SuperAdmin::class,
         ],
     ],
 
