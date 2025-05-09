@@ -16,23 +16,12 @@
             <div class="bg-white shadow-md rounded-lg p-4">
                 <h2 class="text-lg font-semibold">Total Restaurants</h2>
                 <p class="text-3xl font-bold text-blue-500">{{ $totalRestaurants }}</p>
-                <div class="mt-3">
-                    <a href="{{ route('restaurants.index') }}" class="text-sm text-blue-600 hover:underline">
-                        Manage Restaurants →
-                    </a>
-                </div>
             </div>
 
             <!-- Card: Active Discounts -->
             <div class="bg-white shadow-md rounded-lg p-4">
                 <h2 class="text-lg font-semibold">Active Discounts</h2>
                 <p class="text-3xl font-bold text-green-500">{{ $activeDiscounts }}</p>
-            </div>
-
-            <!-- Card: Total Admins -->
-            <div class="bg-white shadow-md rounded-lg p-4">
-                <h2 class="text-lg font-semibold">Total Admins</h2>
-                <p class="text-3xl font-bold text-purple-500">{{ $totalAdmins }}</p>
             </div>
         </div>
         
@@ -43,13 +32,17 @@
             </div>
             <div class="bg-white shadow-md rounded-lg p-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <a href="{{ route('admin.profile.edit') }}" class="block p-4 border border-gray-200 rounded-md hover:bg-yellow-50">
+                        <h3 class="font-semibold text-yellow-600">Edit Profile</h3>
+                        <p class="text-sm text-gray-600 mt-1">Update your restaurant name and photo</p>
+                    </a>
                     <a href="{{ route('restaurants.create') }}" class="block p-4 border border-gray-200 rounded-md hover:bg-green-50">
-                        <h3 class="font-semibold text-green-600">Add New Restaurant</h3>
-                        <p class="text-sm text-gray-600 mt-1">Create a new restaurant with discount offer</p>
+                        <h3 class="font-semibold text-green-600">Add New Menu</h3>
+                        <p class="text-sm text-gray-600 mt-1">Create a new Menu with discount offer</p>
                     </a>
                     <a href="{{ route('restaurants.index') }}" class="block p-4 border border-gray-200 rounded-md hover:bg-blue-50">
-                        <h3 class="font-semibold text-blue-600">View All Restaurants</h3>
-                        <p class="text-sm text-gray-600 mt-1">Manage existing restaurant listings</p>
+                        <h3 class="font-semibold text-blue-600">View All Menu</h3>
+                        <p class="text-sm text-gray-600 mt-1">Manage existing Menu listings</p>
                     </a>
                 </div>
             </div>

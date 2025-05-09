@@ -10,11 +10,11 @@ use App\Http\Controllers\Admin\DashboardController;      // ← tambahkan ini
 // Frontend routes (User)
 Route::group(['middleware' => 'guest'], function () {
     Route::get('/', [App\Http\Controllers\RestaurantController::class, 'index'])->name('frontend.home');
-    Route::get('/restaurants', [App\Http\Controllers\RestaurantController::class, 'index'])->name('restaurants.index');
-    Route::get('/restaurants/{id}', [RestaurantController::class, 'show'])->name('restaurants.show');
+    Route::get('/restaurants', [RestaurantController::class, 'index'])->name('frontend.restaurants.index');
+    Route::get('/restaurants', [RestaurantController::class, 'index'])->name('restaurants.index');
 });
 
-
+Route::resource('restaurants', RestaurantController::class);
 
 
 
@@ -29,8 +29,6 @@ Route::prefix('admin')->group(function () {
     Route::post('login', [AdminLoginController::class, 'login']);
     Route::post('logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
 
-
-
     Route::middleware([
         'auth:admins',
         \App\Http\Middleware\IsAdmin::class,  // ← pakai FQCN di sini
@@ -38,6 +36,10 @@ Route::prefix('admin')->group(function () {
         Route::get('dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
         // CRUD restaurants
         Route::resource('restaurants', \App\Http\Controllers\Admin\RestaurantController::class);
+
+        // CRUD profile admin
+        Route::get('profile', [\App\Http\Controllers\Admin\ProfileController::class, 'edit'])->name('admin.profile.edit');
+        Route::put('profile', [\App\Http\Controllers\Admin\ProfileController::class, 'update'])->name('admin.profile.update');
     });
     
 });

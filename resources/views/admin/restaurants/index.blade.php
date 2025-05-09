@@ -10,6 +10,13 @@
     <div class="container mx-auto p-4">
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-2xl font-bold">Restaurants Management</h1>
+            <form action="{{ route('restaurants.index') }}" method="GET" class="flex items-center">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by Food or Discount..."
+                    class="border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
+                <button type="submit" class="ml-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
+                    Search
+                </button>
+            </form>
             <a href="{{ route('restaurants.create') }}" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
                 Add Restaurant
             </a>
@@ -35,16 +42,8 @@
                     @forelse ($restaurants as $restaurant)
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center">
-                                    @if($restaurant->photo_url)
-                                        <div class="flex-shrink-0 h-10 w-10">
-                                            <img class="h-10 w-10 rounded-full object-cover" src="{{ $restaurant->photo_url }}" alt="{{ $restaurant->name }}">
-                                        </div>
-                                    @endif
-                                    <div class="ml-4">
-                                        <div class="text-sm font-medium text-gray-900">{{ $restaurant->name }}</div>
-                                        <div class="text-sm text-gray-500">{{ Str::limit($restaurant->address, 30) }}</div>
-                                    </div>
+                                <div class="text-sm font-medium text-gray-900">
+                                    {{ $restaurant->admin->Restaurant_Name ?? 'N/A' }}
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
@@ -70,7 +69,7 @@
                     @empty
                         <tr>
                             <td colspan="4" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                                No restaurants found
+                                No restaurants found{{ request('search') ? " for \"".request('search')."\"" : '' }}.
                             </td>
                         </tr>
                     @endforelse

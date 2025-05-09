@@ -99,7 +99,9 @@
                         
                         <!-- Content Container -->
                         <div class="p-6">
-                            <h3 class="text-xl font-semibold text-gray-800 mb-2 group-hover:text-green-600 transition duration-300">{{ $restaurant->name }}</h3>
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2 group-hover:text-green-600 transition duration-300">
+                                {{ $restaurant->admin->Restaurant_Name ?? 'N/A' }}
+                            </h3>
                             
                             <div class="flex items-center text-gray-600 mb-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
