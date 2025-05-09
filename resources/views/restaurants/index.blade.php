@@ -83,7 +83,7 @@
         @else
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
                 @foreach($restaurants as $restaurant)
-                    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 group">
+                    <a href="{{ route('restaurants.show', $restaurant->id) }}" class="block bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 group">
                         <!-- Image Container -->
                         <div class="relative h-48 overflow-hidden">
                             <img src="{{ $restaurant->photo_url }}" alt="{{ $restaurant->name }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
@@ -102,7 +102,6 @@
                             <h3 class="text-xl font-semibold text-gray-800 mb-2 group-hover:text-green-600 transition duration-300">
                                 {{ $restaurant->admin->Restaurant_Name ?? 'N/A' }}
                             </h3>
-                            
                             <div class="flex items-center text-gray-600 mb-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -110,7 +109,6 @@
                                 </svg>
                                 <span class="text-sm">{{ $restaurant->address }}</span>
                             </div>
-                            
                             <div class="space-y-2 mb-4">
                                 <div class="flex items-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -145,7 +143,7 @@
                                 @endif
                             </div>
                         </div>
-                    </div>
+                    </a>
                 @endforeach
             </div>
         @endif

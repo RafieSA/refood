@@ -4,7 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RestaurantController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AdminLoginController;
-use App\Http\Controllers\Admin\DashboardController;      // ← tambahkan ini
+use App\Http\Controllers\Admin\DashboardController;
 
 
 // Frontend routes (User)
@@ -14,8 +14,8 @@ Route::group(['middleware' => 'guest'], function () {
     Route::get('/restaurants', [RestaurantController::class, 'index'])->name('restaurants.index');
 });
 
-Route::resource('restaurants', RestaurantController::class);
-
+// Rute ini berada di luar middleware auth
+Route::get('/restaurants/{id}', [RestaurantController::class, 'show'])->name('restaurants.show');
 
 
 // Default login route (required by Laravel for redirect)
@@ -31,7 +31,7 @@ Route::prefix('admin')->group(function () {
 
     Route::middleware([
         'auth:admins',
-        \App\Http\Middleware\IsAdmin::class,  // ← pakai FQCN di sini
+        \App\Http\Middleware\IsAdmin::class,
     ])->group(function () {
         Route::get('dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
         // CRUD restaurants
