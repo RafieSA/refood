@@ -7,16 +7,12 @@ use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\Admin\DashboardController;
 
 
-// Frontend routes (User)
-Route::group(['middleware' => 'guest'], function () {
-    Route::get('/', [App\Http\Controllers\RestaurantController::class, 'index'])->name('frontend.home');
-    Route::get('/restaurants', [RestaurantController::class, 'index'])->name('frontend.restaurants.index');
-    Route::get('/restaurants', [RestaurantController::class, 'index'])->name('restaurants.index');
-});
-
-// Rute ini berada di luar middleware auth
-Route::get('/restaurants/{id}', [RestaurantController::class, 'show'])->name('restaurants.show');
-
+// Frontend routes (User) yang bisa diakses tanpa login
+Route::get('/', [RestaurantController::class, 'index'])->name('frontend.home');
+Route::get('/restaurants', [RestaurantController::class, 'index'])->name('frontend.restaurants.index');
+Route::get('/restaurants/{id}', [RestaurantController::class, 'show'])->name('frontend.restaurants.show');
+Route::get('/restaurants/{id}/claim', [RestaurantController::class, 'showClaimForm'])->name('frontend.restaurants.claim');
+Route::post('/restaurants/{id}/claim', [RestaurantController::class, 'submitClaimForm'])->name('frontend.restaurants.claim.submit');
 
 // Default login route (required by Laravel for redirect)
 Route::get('login', function() {
