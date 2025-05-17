@@ -49,6 +49,8 @@ class RestaurantController extends Controller
                 abort(404, 'Restaurant not found');
             }
 
+            // Ambil semua komentar
+            
             // Ambil data admin (hanya jika data restoran ditemukan)
             $admin = null;
             if (is_object($restaurant) && isset($restaurant->admin_id)) {
@@ -58,8 +60,9 @@ class RestaurantController extends Controller
             } elseif (isset($restaurant->admin)) {
                 $admin = $restaurant->admin;
             }
-
-            return view('restaurants.detail', compact('restaurant', 'admin'));
+            
+            $coments = \App\Models\Coment::orderBy('id', 'desc')->get();
+            return view('restaurants.detail', compact('restaurant', 'admin', 'coments'));
         } catch (\Exception $e) {
             Log::error('Error fetching restaurant', ['error' => $e->getMessage()]);
             abort(500, 'Server error while fetching restaurant details');
