@@ -29,14 +29,12 @@ class RestaurantController extends Controller
     public function show($id)
     {
         try {
-            // Coba ambil dari database lokal dulu
-            $restaurant = Restaurant::find($id);
-            
+            // Ambil data restoran dari database lokal
+            $restaurant = Restaurant::with('admin')->find($id);
+
             // Jika tidak ditemukan di database lokal, coba ambil dari Supabase
             if (!$restaurant) {
-                // Log untuk debugging
                 Log::info('Restaurant not found in local DB, trying Supabase', ['id' => $id]);
-                
                 $response = Http::withHeaders([
                     'apikey' => env('SUPABASE_KEY'),
                     'Authorization' => 'Bearer ' . env('SUPABASE_KEY')
@@ -44,7 +42,6 @@ class RestaurantController extends Controller
                     'id' => 'eq.' . $id,
                     'select' => '*'
                 ]);
-                
                 $restaurant = $response->json()[0] ?? null;
             }
 
@@ -52,7 +49,17 @@ class RestaurantController extends Controller
                 abort(404, 'Restaurant not found');
             }
 
-            return view('restaurants.detail', compact('restaurant'));
+            // Ambil data admin (hanya jika data restoran ditemukan)
+            $admin = null;
+            if (is_object($restaurant) && isset($restaurant->admin_id)) {
+                $admin = \App\Models\Admin::find($restaurant->admin_id);
+            } elseif (is_array($restaurant) && isset($restaurant['admin_id'])) {
+                $admin = \App\Models\Admin::find($restaurant['admin_id']);
+            } elseif (isset($restaurant->admin)) {
+                $admin = $restaurant->admin;
+            }
+
+            return view('restaurants.detail', compact('restaurant', 'admin'));
         } catch (\Exception $e) {
             Log::error('Error fetching restaurant', ['error' => $e->getMessage()]);
             abort(500, 'Server error while fetching restaurant details');
