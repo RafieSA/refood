@@ -29,22 +29,17 @@ class RestaurantController extends Controller
     public function show($id)
     {
         try {
-            // Coba ambil dari database lokal dulu
-            $restaurant = Restaurant::find($id);
-            
+            $restaurant = \App\Models\Restaurant::find($id);
+
             // Jika tidak ditemukan di database lokal, coba ambil dari Supabase
             if (!$restaurant) {
-                // Log untuk debugging
-                Log::info('Restaurant not found in local DB, trying Supabase', ['id' => $id]);
-                
-                $response = Http::withHeaders([
+                $response = \Illuminate\Support\Facades\Http::withHeaders([
                     'apikey' => env('SUPABASE_KEY'),
                     'Authorization' => 'Bearer ' . env('SUPABASE_KEY')
                 ])->get(env('SUPABASE_URL') . '/rest/v1/restaurants', [
                     'id' => 'eq.' . $id,
                     'select' => '*'
                 ]);
-                
                 $restaurant = $response->json()[0] ?? null;
             }
 
@@ -52,7 +47,10 @@ class RestaurantController extends Controller
                 abort(404, 'Restaurant not found');
             }
 
-            return view('restaurants.detail', compact('restaurant'));
+            // Ambil semua komentar
+            $coments = \App\Models\Coment::orderBy('id', 'desc')->get();
+
+            return view('restaurants.detail', compact('restaurant', 'coments'));
         } catch (\Exception $e) {
             Log::error('Error fetching restaurant', ['error' => $e->getMessage()]);
             abort(500, 'Server error while fetching restaurant details');

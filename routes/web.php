@@ -5,6 +5,7 @@ use App\Http\Controllers\RestaurantController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\ComentController;
 
 
 // Frontend routes (User) yang bisa diakses tanpa login
@@ -53,4 +54,6 @@ Route::prefix('super-admin')->middleware(['auth:super_admins'])->group(function 
     Route::get('dashboard', [\App\Http\Controllers\Admin\SuperAdminDashboardController::class, 'index'])->name('super_admin.dashboard');
     Route::resource('admins', \App\Http\Controllers\Admin\SuperAdminController::class);
 });
+
+Route::post('/coments', [ComentController::class, 'store'])->name('coments.store');
 
