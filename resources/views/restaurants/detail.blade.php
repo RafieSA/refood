@@ -151,7 +151,9 @@
                             </p>
                         </div>
                         <div class="mt-8 mb-8 bg-white rounded-xl shadow-sm p-6 flex items-center space-x-6">
-                            <img src="{{ $admin->Restaurant_Photo ?? asset('default-restaurant.png') }}" alt="Foto Restoran" class="w-24 h-24 rounded-full object-cover border-2 border-green-500">
+                            <img src="{{ $admin->Restaurant_Photo ? asset('storage/' . $admin->Restaurant_Photo) : asset('default-restaurant.png') }}"
+                            alt="Foto Restoran"
+                            class="w-24 h-24 rounded-full object-cover border-2 border-green-500">
                             <div>
                                 <h2 class="text-2xl font-bold text-gray-800 mb-1">{{ $admin->Restaurant_Name }}</h2>
                                 <div class="flex items-center text-gray-600">
