@@ -22,11 +22,20 @@
                     <span class="ml-2 text-gray-600 text-sm hidden sm:inline">All Discounts is Here!</span>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <button class="text-gray-600 hover:text-green-600 transition duration-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                    </button>
+                    <!-- Search Form in Navbar -->
+                    <form action="{{ route('frontend.restaurants.index') }}" method="GET" class="flex items-center">
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari restoran/menu..."
+                            class="border border-gray-300 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <button type="submit" class="ml-2 text-green-600 hover:text-green-800">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </button>
+                    </form>
+                    <!-- Customer Service Link -->
+                    <a href="{{ route('customer.service') }}" target="_blank" class="ml-4 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded transition">
+                        Customer Service
+                    </a>
                 </div>
             </div>
         </div>
@@ -224,7 +233,6 @@
                         <a href="#" class="text-gray-400 hover:text-white transition duration-300">
                             <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
-                            </svg>
                         </a>
                         <a href="#" class="text-gray-400 hover:text-white transition duration-300">
                             <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">

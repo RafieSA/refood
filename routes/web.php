@@ -13,6 +13,9 @@ Route::get('/restaurants', [RestaurantController::class, 'index'])->name('fronte
 Route::get('/restaurants/{id}', [RestaurantController::class, 'show'])->name('frontend.restaurants.show');
 Route::get('/restaurants/{id}/claim', [RestaurantController::class, 'showClaimForm'])->name('frontend.restaurants.claim');
 Route::post('/restaurants/{id}/claim', [RestaurantController::class, 'submitClaimForm'])->name('frontend.restaurants.claim.submit');
+Route::get('/customer-service', function () {
+    return view('customer-service');
+})->name('customer.service');
 
 // Default login route (required by Laravel for redirect)
 Route::get('login', function() {

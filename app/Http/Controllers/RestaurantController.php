@@ -10,9 +10,19 @@ use App\Models\Restaurant;
 class RestaurantController extends Controller
 {
     // Menampilkan semua restoran
-    public function index()
+    public function index(Request $request)
     {
-        $restaurants = Restaurant::all();
+        $search = $request->input('search');
+
+        $restaurants = \App\Models\Restaurant::with('admin')
+            ->when($search, function ($query, $search) {
+                $query->whereHas('admin', function ($q) use ($search) {
+                    $q->where('Restaurant_Name', 'ilike', "%{$search}%");
+                })
+                ->orWhere('food_name', 'ilike', "%{$search}%");
+            })
+            ->get();
+
         return view('restaurants.index', compact('restaurants'));
     }
 
