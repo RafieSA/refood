@@ -5,6 +5,7 @@ use App\Http\Controllers\RestaurantController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ArticleController;
 
 
 // Frontend routes (User) yang bisa diakses tanpa login
@@ -16,6 +17,7 @@ Route::post('/restaurants/{id}/claim', [RestaurantController::class, 'submitClai
 Route::get('/customer-service', function () {
     return view('customer-service');
 })->name('customer.service');
+Route::get('/articles/{id}', [ArticleController::class, 'show'])->name('frontend.articles.show');
 
 // Default login route (required by Laravel for redirect)
 Route::get('login', function() {
@@ -52,5 +54,7 @@ Route::prefix('super-admin')->group(function () {
 Route::prefix('super-admin')->middleware(['auth:super_admins'])->group(function () {
     Route::get('dashboard', [\App\Http\Controllers\Admin\SuperAdminDashboardController::class, 'index'])->name('super_admin.dashboard');
     Route::resource('admins', \App\Http\Controllers\Admin\SuperAdminController::class);
+    Route::resource('restaurants', \App\Http\Controllers\Admin\RestaurantController::class); // Tambahkan ini
+    Route::resource('articles', \App\Http\Controllers\Admin\ArticleController::class);
 });
 

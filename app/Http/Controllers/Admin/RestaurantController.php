@@ -59,22 +59,14 @@ class RestaurantController extends Controller
      */
     public function index(Request $request)
     {
-        $adminId = auth()->guard('admins')->id();
-
-        // Ambil input pencarian
-        $search = $request->input('search');
-
-        // Query restoran berdasarkan admin_id dan pencarian
-        $restaurants = Restaurant::with('admin')
-            ->where('admin_id', $adminId)
-            ->when($search, function ($query, $search) {
-                $query->where(function ($q) use ($search) {
-                    $q->where('food_name', 'like', "%{$search}%")
-                      ->orWhere('discount_percentage', 'like', "%{$search}%");
-                });
-            })
-            ->get();
-
+        if (auth()->guard('super_admins')->check()) {
+            // Super admin: lihat semua restaurant
+            $restaurants = Restaurant::with('admin')->get();
+        } else {
+            // Admin restaurant: hanya lihat miliknya
+            $adminId = auth()->guard('admins')->id();
+            $restaurants = Restaurant::with('admin')->where('admin_id', $adminId)->get();
+        }
         return view('admin.restaurants.index', compact('restaurants'));
     }
 
@@ -162,6 +154,11 @@ class RestaurantController extends Controller
 
         $restaurant->save();
 
+        // Jika super-admin, redirect ke dashboard super-admin
+        if (auth()->guard('super_admins')->check()) {
+            return redirect()->route('super_admin.dashboard')->with('success', 'Restaurant updated successfully');
+        }
+
         return redirect()->route('restaurants.index')->with('success', 'Restaurant updated successfully');
     }
 
@@ -175,6 +172,11 @@ class RestaurantController extends Controller
         }
 
         $restaurant->delete();
+
+        // Jika super-admin, redirect ke dashboard super-admin
+        if (auth()->guard('super_admins')->check()) {
+            return redirect()->route('super_admin.dashboard')->with('success', 'Restaurant deleted successfully');
+        }
 
         return redirect()->route('restaurants.index')->with('success', 'Restaurant deleted successfully');
     }

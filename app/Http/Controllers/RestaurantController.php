@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use App\Models\Restaurant;
+use App\Models\Article;
 
 class RestaurantController extends Controller
 {
@@ -23,7 +24,9 @@ class RestaurantController extends Controller
             })
             ->get();
 
-        return view('restaurants.index', compact('restaurants'));
+        $articles = Article::orderBy('uploaded_at', 'desc')->take(3)->get(); // Ambil 3 artikel terbaru
+
+        return view('restaurants.index', compact('restaurants', 'articles'));
     }
 
     public function show($id)

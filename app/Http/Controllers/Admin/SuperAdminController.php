@@ -22,14 +22,29 @@ class SuperAdminController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'Restaurant_Name' => 'required|string|max:255',
             'email' => 'required|email|unique:admins,email',
             'password' => 'required|string|min:8',
+            'Restaurant_Photo' => 'nullable|image|max:2048',
         ]);
 
-        Admin::create($validated);
+        $admin = new Admin();
+        $admin->Restaurant_Name = $validated['Restaurant_Name'];
+        $admin->email = $validated['email'];
+        $admin->password = bcrypt($validated['password']);
 
-        return redirect()->route('super_admins.index')->with('success', 'Admin created successfully.');
+        if ($request->hasFile('Restaurant_Photo')) {
+            $path = $request->file('Restaurant_Photo')->store('admins', 'public');
+            $admin->Restaurant_Photo = $path;
+        }
+
+        $admin->save();
+
+        // Ambil data untuk dashboard
+        $admins = Admin::all();
+        $restaurants = \App\Models\Restaurant::with('admin')->get();
+
+        return view('admin.super_admins.dashboard', compact('admins', 'restaurants'))->with('success', 'Admin created successfully.');
     }
 
     public function edit(Admin $admin)
@@ -40,26 +55,39 @@ class SuperAdminController extends Controller
     public function update(Request $request, Admin $admin)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'Restaurant_Name' => 'required|string|max:255',
             'email' => 'required|email|unique:admins,email,' . $admin->id,
             'password' => 'nullable|string|min:8',
+            'Restaurant_Photo' => 'nullable|image|max:2048',
         ]);
 
+        $admin->Restaurant_Name = $validated['Restaurant_Name'];
+        $admin->email = $validated['email'];
+
         if ($request->filled('password')) {
-            $validated['password'] = bcrypt($validated['password']);
-        } else {
-            unset($validated['password']);
+            $admin->password = bcrypt($validated['password']);
         }
 
-        $admin->update($validated);
+        if ($request->hasFile('Restaurant_Photo')) {
+            $path = $request->file('Restaurant_Photo')->store('admins', 'public');
+            $admin->Restaurant_Photo = $path;
+        }
 
-        return redirect()->route('super_admins.index')->with('success', 'Admin updated successfully.');
+        $admin->save();
+
+        $admins = Admin::all();
+        $restaurants = \App\Models\Restaurant::with('admin')->get();
+
+        return view('admin.super_admins.dashboard', compact('admins', 'restaurants'))->with('success', 'Admin updated successfully.');
     }
 
     public function destroy(Admin $admin)
     {
         $admin->delete();
 
-        return redirect()->route('admin.super_admins.index')->with('success', 'Admin deleted successfully.');
+        $admins = Admin::all();
+        $restaurants = \App\Models\Restaurant::with('admin')->get();
+
+        return view('admin.super_admins.dashboard', compact('admins', 'restaurants'))->with('success', 'Admin deleted successfully.');
     }
 }

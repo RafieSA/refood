@@ -196,7 +196,74 @@
                 @endforeach
             </div>
         @endif
+    </div> <!-- Penutup .container mx-auto utama -->
+
+    <!-- Artikel Section -->
+    <div class="container mx-auto px-4 mb-12">
+        <h2 class="text-2xl font-bold mb-6 text-green-700">Artikel Terbaru</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            @forelse($articles as $article)
+                <a href="{{ route('frontend.articles.show', $article->id) }}" target="_blank"
+                   class="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition block">
+                    @if($article->image_url)
+                        <img src="{{ $article->image_url }}" alt="{{ $article->title }}" class="w-full h-48 object-cover">
+                    @endif
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold mb-2">{{ $article->title }}</h3>
+                        <p class="text-gray-600 mb-4">{{ Str::limit($article->description, 100) }}</p>
+                        <div class="text-xs text-gray-400 mb-2">Diunggah {{ \Carbon\Carbon::parse($article->uploaded_at)->diffForHumans() }}</div>
+                    </div>
+                </a>
+            @empty
+                <div class="col-span-3 text-center text-gray-500">Belum ada artikel.</div>
+            @endforelse
+        </div>
     </div>
+
+    <!-- Modal Popup -->
+    <div id="article-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative">
+            <button onclick="closeArticleModal()" class="absolute top-2 right-2 text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+            <img id="modal-article-image" src="" alt="" class="w-full h-56 object-cover rounded mb-4" style="display:none;">
+            <h3 id="modal-article-title" class="text-xl font-bold mb-2"></h3>
+            <div id="modal-article-date" class="text-xs text-gray-400 mb-2"></div>
+            <p id="modal-article-description" class="text-gray-700"></p>
+        </div>
+    </div>
+
+    <script>
+        // Function to open the article modal and populate it with data
+        function openArticleModal(title, description, image, date) {
+            document.getElementById('modal-article-title').innerText = title;
+            document.getElementById('modal-article-date').innerText = date;
+            document.getElementById('modal-article-description').innerText = description;
+
+            const imgElement = document.getElementById('modal-article-image');
+            imgElement.src = image;
+            imgElement.style.display = image ? 'block' : 'none';
+
+            document.getElementById('article-modal').classList.remove('hidden');
+        }
+
+        // Function to close the article modal
+        function closeArticleModal() {
+            document.getElementById('article-modal').classList.add('hidden');
+        }
+
+        function showArticleModal(title, description, imageUrl, date) {
+            document.getElementById('modal-article-title').textContent = title;
+            document.getElementById('modal-article-description').textContent = description;
+            document.getElementById('modal-article-date').textContent = date;
+            const img = document.getElementById('modal-article-image');
+            if(imageUrl) {
+                img.src = imageUrl;
+                img.style.display = 'block';
+            } else {
+                img.style.display = 'none';
+            }
+            document.getElementById('article-modal').classList.remove('hidden');
+        }
+    </script>
 
     <!-- Footer -->
     <footer class="bg-gray-800 text-white mt-12">
