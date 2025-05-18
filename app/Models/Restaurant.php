@@ -47,6 +47,6 @@ class Restaurant extends Model
     // Relationship with Admin
     public function admin()
     {
-        return $this->belongsTo(Admin::class, 'admin_id');
+        return $this->belongsTo(\App\Models\Admin::class, 'admin_id');
     }
 }

@@ -80,14 +80,9 @@
                     </div>
                     
                     <div class="flex space-x-2">
-                        <button class="flex items-center justify-center h-10 w-10 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition">
+                        <button id="shareBtn" class="flex items-center justify-center h-10 w-10 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition" title="Share">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                            </svg>
-                        </button>
-                        <button class="flex items-center justify-center h-10 w-10 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                             </svg>
                         </button>
                     </div>
@@ -154,6 +149,21 @@
                                 Our restaurant partners prepare fresh meals daily and offer discounts on surplus items 
                                 that would otherwise go to waste by the end of the day.
                             </p>
+                        </div>
+                        <div class="mt-8 mb-8 bg-white rounded-xl shadow-sm p-6 flex items-center space-x-6">
+                            <img src="{{ $admin->Restaurant_Photo ? asset('storage/' . $admin->Restaurant_Photo) : asset('default-restaurant.png') }}"
+                            alt="Foto Restoran"
+                            class="w-24 h-24 rounded-full object-cover border-2 border-green-500">
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-800 mb-1">{{ $admin->Restaurant_Name }}</h2>
+                                <div class="flex items-center text-gray-600">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    <span>{{ is_array($restaurant) ? $restaurant['address'] : $restaurant->address }}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     
@@ -224,83 +234,106 @@
         <div class="bg-white rounded-xl shadow-sm p-6 md:p-8">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-2xl font-semibold text-gray-800">Customer Reviews</h2>
-                <button class="bg-green-50 text-green-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-100 transition">
+                <button
+                    class="bg-green-50 text-green-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-100 transition"
+                    onclick="document.getElementById('review-modal').classList.remove('hidden')"
+                    type="button"
+                >
                     Write a Review
                 </button>
             </div>
-            
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                @forelse($coments as $coment)
                 <div class="bg-gray-50 p-4 rounded-lg">
                     <div class="flex items-start mb-3">
                         <div class="bg-green-100 h-10 w-10 rounded-full flex items-center justify-center text-green-700 font-semibold mr-3">
-                            JD
+                            {{ strtoupper(substr($coment->name,0,2)) }}
                         </div>
                         <div>
-                            <h4 class="font-medium text-gray-800">John Doe</h4>
+                            <h4 class="font-medium text-gray-800">{{ $coment->name }}</h4>
                             <div class="flex text-yellow-400 text-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                </svg>
+                                @for($i=1; $i<=$coment->rating; $i++)
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                    </svg>
+                                @endfor
                             </div>
                         </div>
-                        <span class="ml-auto text-xs text-gray-500">2 days ago</span>
                     </div>
-                    <p class="text-gray-700 text-sm">Great food and amazing discount! The ordering process was smooth and pickup was quick. Will definitely use ReFood again for more deals.</p>
+                    <p class="text-gray-700 text-sm">{{ $coment->coments }}</p>
                 </div>
-                
-                <div class="bg-gray-50 p-4 rounded-lg">
-                    <div class="flex items-start mb-3">
-                        <div class="bg-green-100 h-10 w-10 rounded-full flex items-center justify-center text-green-700 font-semibold mr-3">
-                            MS
-                        </div>
-                        <div>
-                            <h4 class="font-medium text-gray-800">Maria Smith</h4>
-                            <div class="flex text-yellow-400 text-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-300" viewBox="0 0 20 20" fill="currentColor">
-                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                </svg>
-                            </div>
-                        </div>
-                        <span class="ml-auto text-xs text-gray-500">1 week ago</span>
-                    </div>
-                    <p class="text-gray-700 text-sm">The food was still delicious even near closing time. Love that I'm helping reduce food waste while saving money. App is very user-friendly too!</p>
-                </div>
-            </div>
-            
-            <div class="text-center">
-                <button class="text-green-600 hover:text-green-800 font-medium text-sm flex items-center mx-auto">
-                    See all reviews
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </button>
+                @empty
+                <div class="col-span-2 text-center text-gray-400">Belum ada review.</div>
+                @endforelse
             </div>
         </div>
     </div>
+
+    <!-- Modal Popup Review -->
+<div id="review-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden">
+    <div class="bg-white rounded-xl shadow-lg w-full max-w-md p-8 relative">
+        <button class="absolute top-2 right-2 text-gray-400 hover:text-gray-600 text-2xl"
+            onclick="document.getElementById('review-modal').classList.add('hidden')">&times;</button>
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Write a Review</h2>
+        <form action="{{ route('coments.store') }}" method="POST">
+            @csrf
+            <div class="mb-4">
+                <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+                <input type="text" name="name" id="name" class="mt-1 block w-full border-gray-300 rounded-md" required>
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Rating</label>
+                <div class="flex flex-row-reverse justify-end" id="star-rating">
+                    @for($i = 5; $i >= 1; $i--)
+                        <input type="radio" id="star{{ $i }}" name="rating" value="{{ $i }}" class="hidden" required>
+                        <label for="star{{ $i }}" class="cursor-pointer star-label" data-value="{{ $i }}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 star-svg text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                            </svg>
+                        </label>
+                    @endfor
+                </div>
+            </div>
+            <div class="mb-4">
+                <label for="coments" class="block text-sm font-medium text-gray-700">Comments</label>
+                <textarea name="coments" id="coments" rows="3" class="mt-1 block w-full border-gray-300 rounded-md" required></textarea>
+            </div>
+            <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Submit</button>
+        </form>
+    </div>
+</div>
+<script>
+    // Interaktif bintang rating
+    document.addEventListener('DOMContentLoaded', function () {
+        const stars = document.querySelectorAll('#star-rating .star-label');
+        const radios = document.querySelectorAll('#star-rating input[type="radio"]');
+        stars.forEach(star => {
+            star.addEventListener('mouseenter', function () {
+                const val = parseInt(this.getAttribute('data-value'));
+                highlightStars(val);
+            });
+            star.addEventListener('mouseleave', function () {
+                const checked = document.querySelector('#star-rating input[type="radio"]:checked');
+                highlightStars(checked ? parseInt(checked.value) : 0);
+            });
+            star.addEventListener('click', function () {
+                const val = parseInt(this.getAttribute('data-value'));
+                radios.forEach(radio => {
+                    if (parseInt(radio.value) === val) radio.checked = true;
+                });
+                highlightStars(val);
+            });
+        });
+        function highlightStars(val) {
+            stars.forEach(star => {
+                const starVal = parseInt(star.getAttribute('data-value'));
+                star.querySelector('svg').classList.toggle('text-yellow-400', starVal <= val);
+                star.querySelector('svg').classList.toggle('text-gray-300', starVal > val);
+            });
+        }
+        highlightStars(0);
+    });
+</script>
 
     <!-- FAQ Section -->
     <div class="container mx-auto px-4 py-8">
@@ -416,4 +449,58 @@
             </div>
         </div>
     </footer>
+
+    <!-- Modal Share -->
+    <div id="shareModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm text-center relative">
+            <button id="closeShareModal" class="absolute top-2 right-2 text-gray-400 hover:text-gray-600">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            <h2 class="text-lg font-semibold mb-4">Share Restaurant</h2>
+            <div class="flex items-center border rounded px-2 py-1 mb-4">
+                <input id="shareLink" type="text" readonly class="w-full outline-none bg-transparent text-gray-700" value="{{ url()->current() }}">
+                <button id="copyShareLink" class="ml-2 bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm">Copy</button>
+            </div>
+            <span id="copySuccess" class="text-green-600 text-sm hidden">Link copied!</span>
+        </div>
+    </div>
+
+    <!-- Script Modal Share -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const shareBtn = document.getElementById('shareBtn');
+            const shareModal = document.getElementById('shareModal');
+            const closeShareModal = document.getElementById('closeShareModal');
+            const copyBtn = document.getElementById('copyShareLink');
+            const shareLink = document.getElementById('shareLink');
+            const copySuccess = document.getElementById('copySuccess');
+
+            shareBtn.addEventListener('click', () => {
+                shareModal.classList.remove('hidden');
+            });
+
+            closeShareModal.addEventListener('click', () => {
+                shareModal.classList.add('hidden');
+                copySuccess.classList.add('hidden');
+            });
+
+            copyBtn.addEventListener('click', () => {
+                shareLink.select();
+                shareLink.setSelectionRange(0, 99999);
+                document.execCommand('copy');
+                copySuccess.classList.remove('hidden');
+                setTimeout(() => copySuccess.classList.add('hidden'), 1500);
+            });
+
+            // Optional: close modal when clicking outside
+            shareModal.addEventListener('click', function(e) {
+                if (e.target === shareModal) {
+                    shareModal.classList.add('hidden');
+                    copySuccess.classList.add('hidden');
+                }
+            });
+        });
+    </script>
 </html>
