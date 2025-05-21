@@ -121,15 +121,94 @@ class RestaurantController extends Controller
         ]);
         
         try {
-            // Di sini Anda bisa menyimpan data claim ke database
-            // atau mengirim email konfirmasi, dll.
+            // Dapatkan informasi restaurant
+            $restaurant = Restaurant::find($id);
+            if (!$restaurant) {
+                Log::info('Trying to save claim to Supabase', [
+                    'supabase_url' => env('SUPABASE_URL'),
+                    'key_length' => strlen(env('SUPABASE_KEY')),
+                    'restaurant_id' => $id,
+                    'data' => [
+                        'name' => $validated['name'],
+                        'email' => $validated['email'],
+                        'phone' => $validated['phone']
+                    ]
+                ]);
+                $response = Http::withHeaders([
+                    'apikey' => env('SUPABASE_KEY'),
+                    'Authorization' => 'Bearer ' . env('SUPABASE_KEY')
+                ])->get(env('SUPABASE_URL') . '/rest/v1/restaurants', [
+                    'id' => 'eq.' . $id,
+                    'select' => '*'
+                ]);
+                
+                if ($response->successful() && count($response->json()) > 0) {
+                    $restaurant = (object) $response->json()[0];
+                }
+            }
             
+            if (!$restaurant) {
+                return back()->withErrors(['general' => 'Restaurant tidak ditemukan.']);
+            }
+            
+            // Generate unique claim code
+            $claimCode = 'RF-' . strtoupper(substr(md5(uniqid()), 0, 8));
+            
+            // Set expire time (24 hours from now)
+            $expireAt = date('Y-m-d H:i:s', strtotime('+24 hours'));
+            
+            // Simpan data ke Supabase
+            $response = Http::withHeaders([
+                'apikey' => env('SUPABASE_KEY'),
+                'Authorization' => 'Bearer ' . env('SUPABASE_KEY'),
+                'Content-Type' => 'application/json',
+                'Prefer' => 'return=minimal'
+            ])
+            ->withOptions([
+                'verify' => false
+            ])
+            ->post(env('SUPABASE_URL') . '/rest/v1/discount_claims', [
+                'restaurant_id' => (string)$id,
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'phone' => $validated['phone'],
+                'notes' => $validated['notes'] ?? '',
+                'status' => 'pending',
+                'claim_code' => $claimCode,
+                'expire_at' => $expireAt
+                // Biarkan created_at dan updated_at dihasilkan oleh default di Supabase
+            ]);
+
+            if (!$response->successful()) {
+                Log::error('Error saving claim to Supabase', [
+                    'error' => $response->body(),
+                    'status' => $response->status(),
+                    'request_data' => [
+                        'restaurant_id' => $id,
+                        'name' => $validated['name'],
+                        'email' => $validated['email'],
+                        'phone' => $validated['phone'],
+                        'notes' => $validated['notes'] ?? '',
+                        'status' => 'pending',
+                        'claim_code' => $claimCode
+                    ]
+                ]);
+                return back()->withInput()->withErrors(['general' => 'Gagal menyimpan data klaim ke database. Error: ' . $response->body()]);
+            }
+                        
             // Redirect ke halaman konfirmasi dengan pesan sukses
             return redirect()->route('frontend.restaurants.index')
-                ->with('success', 'Permintaan klaim diskon berhasil! Silakan tunggu konfirmasi dari restoran.');
-        } catch (\Exception $e) {
-            Log::error('Error in submitClaimForm: ' . $e->getMessage());
-            return back()->withInput()->withErrors(['general' => 'Terjadi kesalahan. Silakan coba lagi nanti.']);
+                ->with('success', 'Permintaan klaim diskon berhasil! Kode klaim Anda: ' . $claimCode);
+        }catch (\Exception $e) {
+            Log::error('Error in submitClaimForm: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+                'exception_class' => get_class($e)
+            ]);
+            
+            // Tampilkan error untuk debugging (hapus/komentar untuk production)
+            return back()->withInput()->withErrors([
+                'general' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ]);
         }
     }
 }
