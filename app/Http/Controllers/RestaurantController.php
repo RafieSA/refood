@@ -197,8 +197,8 @@ class RestaurantController extends Controller
             }
                         
             // Redirect ke halaman konfirmasi dengan pesan sukses
-            return redirect()->route('frontend.restaurants.index')
-                ->with('success', 'Permintaan klaim diskon berhasil! Kode klaim Anda: ' . $claimCode);
+            return redirect()->route('frontend.home')
+        ->with('success', 'Permintaan klaim diskon berhasil! Kode klaim Anda: ' . $claimCode);
         }catch (\Exception $e) {
             Log::error('Error in submitClaimForm: ' . $e->getMessage(), [
                 'trace' => $e->getTraceAsString(),
