@@ -45,7 +45,7 @@
             </div>
 
             <div class="mt-6 flex items-center justify-end">
-                <a href="{{ route('articles.index') }}" class="text-gray-500 hover:text-gray-700 mr-4">Cancel</a>
+                <a href="{{ route('super_admin.dashboard', ['active_tab' => 'artikel']) }}" class="text-gray-500 hover:text-gray-700 mr-4">Cancel</a>
                 <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
                     Update Artikel
                 </button>
