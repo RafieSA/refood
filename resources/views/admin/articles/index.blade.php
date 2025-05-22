@@ -48,7 +48,7 @@
 
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-2xl font-bold">Daftar Artikel</h1>
-            <a href="{{ route('super_admin.dashboard') }}" class="text-blue-500 hover:underline">
+            <a href="{{ route('super_admin.dashboard') }}?active_tab=artikel" class="text-blue-500 hover:underline">
                 ← Kembali ke Dashboard
             </a>
         </div>
@@ -111,55 +111,5 @@
             </tbody>
         </table>
     </div>
-    <script>
-    // Fungsi untuk menampilkan tab yang dipilih
-    function showTab(evt, tabId) {
-        evt.preventDefault();
-        // Hide all tab contents
-        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
-        // Remove active class from all tabs
-        document.querySelectorAll('#tabs a').forEach(tab => tab.classList.remove('border-b-2', 'border-green-600', 'active'));
-        // Show selected tab
-        document.getElementById(tabId).classList.remove('hidden');
-        // Add active class to selected tab
-        evt.currentTarget.classList.add('border-b-2', 'border-green-600', 'active');
-        
-        // Store active tab in session storage
-        sessionStorage.setItem('activeTab', tabId);
-    }
-    
-    // Menjalankan fungsi saat halaman dimuat
-    document.addEventListener('DOMContentLoaded', function() {
-        // Cek parameter URL untuk tab aktif
-        const urlParams = new URLSearchParams(window.location.search);
-        const activeTabParam = urlParams.get('active_tab');
-        
-        let activeTabId;
-        
-        // Prioritas: 1. Parameter URL, 2. Session Storage, 3. Default (tab-admins)
-        if (activeTabParam === 'artikel') {
-            activeTabId = 'tab-artikel';
-        } else if (activeTabParam === 'restaurants') {
-            activeTabId = 'tab-restaurants';
-        } else if (activeTabParam === 'admins') {
-            activeTabId = 'tab-admins';
-        } else {
-            // Jika tidak ada parameter, cek di session storage
-            activeTabId = sessionStorage.getItem('activeTab') || 'tab-admins';
-        }
-        
-        // Aktifkan tab yang sesuai
-        const tabLink = document.querySelector(`a[href="#${activeTabId}"]`);
-        if (tabLink) {
-            // Trigger click event pada tab yang sesuai
-            const clickEvent = new MouseEvent('click', {
-                bubbles: true,
-                cancelable: true,
-                view: window
-            });
-            tabLink.dispatchEvent(clickEvent);
-        }
-    });
-</script>
 </body>
 </html>

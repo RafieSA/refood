@@ -138,22 +138,59 @@
             </table>
         </div>
     </div>
-    <script>
-        function showTab(evt, tabId) {
-            evt.preventDefault();
-            // Hide all tab contents
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
-            // Remove active class from all tabs
-            document.querySelectorAll('#tabs a').forEach(tab => tab.classList.remove('border-b-2', 'border-green-600', 'active'));
-            // Show selected tab
-            document.getElementById(tabId).classList.remove('hidden');
-            // Add active class to clicked tab
-            evt.currentTarget.classList.add('border-b-2', 'border-green-600', 'active');
-        }
-        // Show first tab by default
-        document.addEventListener('DOMContentLoaded', function() {
-            showTab({preventDefault:()=>{}, currentTarget: document.querySelector('#tabs a')}, 'tab-admins');
-        });
-    </script>
+        <script>
+            // Fungsi untuk menampilkan tab yang dipilih
+            function showTab(evt, tabId) {
+                if (evt) evt.preventDefault(); // Allow null event for programmatic calls
+                
+                // Hide all tab contents
+                document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+                
+                // Remove active class from all tabs
+                document.querySelectorAll('#tabs a').forEach(tab => tab.classList.remove('border-b-2', 'border-green-600', 'active'));
+                
+                // Show selected tab
+                const tabElement = document.getElementById(tabId);
+                if (tabElement) tabElement.classList.remove('hidden');
+                
+                // Add active class to selected tab link
+                const tabLink = document.querySelector(`a[href="#${tabId}"]`);
+                if (tabLink) tabLink.classList.add('border-b-2', 'border-green-600', 'active');
+                
+                // Store active tab in session storage
+                sessionStorage.setItem('activeTab', tabId);
+            }
+            
+            // Menjalankan fungsi saat halaman dimuat
+            document.addEventListener('DOMContentLoaded', function() {
+                // Cek parameter URL untuk tab aktif
+                const urlParams = new URLSearchParams(window.location.search);
+                const activeTabParam = urlParams.get('active_tab');
+                
+                // Log untuk debugging
+                console.log("Active tab parameter:", activeTabParam);
+                
+                let tabToActivate = 'tab-admins';  // Default tab
+                
+                // Set tab berdasarkan parameter URL
+                if (activeTabParam === 'artikel') {
+                    tabToActivate = 'tab-artikel';
+                } else if (activeTabParam === 'restaurants') {
+                    tabToActivate = 'tab-restaurants';
+                } else if (activeTabParam === 'admins') {
+                    tabToActivate = 'tab-admins';
+                } else {
+                    // Jika tidak ada parameter, cek di session storage
+                    const savedTab = sessionStorage.getItem('activeTab');
+                    if (savedTab) tabToActivate = savedTab;
+                }
+                
+                // Log untuk debugging
+                console.log("Tab to activate:", tabToActivate);
+                
+                // Aktifkan tab yang diinginkan (tanpa event)
+                showTab(null, tabToActivate);
+            });
+        </script>
 </body>
 </html>
