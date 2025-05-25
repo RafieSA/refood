@@ -118,6 +118,46 @@
             </div>
         </div>
 
+        <!-- Kategori Carousel -->
+        @php
+            $categoryList = [
+                [
+                    'key' => 'indonesian',
+                    'label' => 'Indonesian',
+                    'icon' => '<span class="text-2xl mr-3">🍚</span>',
+                ],
+                [
+                    'key' => 'western',
+                    'label' => 'Western',
+                    'icon' => '<span class="text-2xl mr-3">🍔</span>',
+                ],
+                [
+                    'key' => 'asian',
+                    'label' => 'Asian',
+                    'icon' => '<span class="text-2xl mr-3">🍣</span>',
+                ],
+            ];
+            $selectedCategory = strtolower(request('category', ''));
+        @endphp
+
+        <div class="container mx-auto px-4 mb-8">
+            <div class="flex overflow-x-auto space-x-4 hide-scrollbar py-2">
+                @foreach($categoryList as $cat)
+                    <a href="?category={{ $cat['key'] }}"
+                       class="flex items-center px-6 py-3 rounded-full shadow-md bg-white border transition
+                           {{ $selectedCategory === $cat['key'] ? 'border-green-600 bg-green-50 text-green-700 font-semibold' : 'border-gray-200 text-gray-700 hover:bg-green-50' }}">
+                        {!! $cat['icon'] !!}
+                        <span class="whitespace-nowrap">{{ $cat['label'] }}</span>
+                    </a>
+                @endforeach
+            </div>
+        </div>
+
+        <style>
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        </style>
+
         <!-- Restaurants Grid -->
         @if($restaurants->isEmpty())
             <div class="text-center py-20 bg-white rounded-lg shadow-md">

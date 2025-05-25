@@ -13,7 +13,18 @@ class SuperAdminDashboardController extends Controller
     public function index(Request $request)
     {
         $admins = Admin::all();
-        $restaurants = Restaurant::with('admin')->get();
+
+        // Tambahkan pencarian restaurant
+        $restaurantSearch = $request->input('restaurant_search');
+        $restaurants = \App\Models\Restaurant::with('admin')
+            ->when($restaurantSearch, function ($query, $restaurantSearch) {
+                $query->where('food_name', 'ilike', "%{$restaurantSearch}%")
+                      ->orWhere('address', 'ilike', "%{$restaurantSearch}%")
+                      ->orWhereHas('admin', function ($q) use ($restaurantSearch) {
+                          $q->where('Restaurant_Name', 'ilike', "%{$restaurantSearch}%");
+                      });
+            })
+            ->get();
 
         $search = $request->input('search');
         $articles = Article::when($search, function ($query, $search) {
@@ -21,6 +32,6 @@ class SuperAdminDashboardController extends Controller
                   ->orWhere('description', 'ilike', "%{$search}%");
         })->orderBy('uploaded_at', 'desc')->get();
 
-        return view('admin.super_admins.dashboard', compact('admins', 'restaurants', 'articles', 'search'));
+        return view('admin.super_admins.dashboard', compact('admins', 'restaurants', 'articles', 'search', 'restaurantSearch'));
     }
 }

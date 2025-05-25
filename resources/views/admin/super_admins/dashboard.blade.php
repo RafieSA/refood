@@ -60,6 +60,18 @@
         <div id="tab-restaurants" class="tab-content hidden">
             <h2 class="text-xl font-semibold mb-4">Restaurants</h2>
             <a href="{{ route('restaurants.create') }}" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded mb-4 inline-block">Add Restaurant</a>
+            
+            <!-- Search Form -->
+            <form action="{{ route('super_admin.dashboard') }}#tab-restaurants" method="GET" class="mb-4 flex items-center">
+                <input type="text" name="restaurant_search" value="{{ request('restaurant_search') }}" placeholder="Search by name, address, or admin..."
+                    class="border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
+                <button type="submit" class="ml-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
+                    Search
+                </button>
+                @if(request('restaurant_search'))
+                    <a href="{{ route('super_admin.dashboard') }}#tab-restaurants" class="ml-2 text-gray-500 hover:underline">Reset</a>
+                @endif
+            </form>
             <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
                 <thead>
                     <tr>
