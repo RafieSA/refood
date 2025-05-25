@@ -7,7 +7,7 @@ use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ArticleController;
 use App\Http\Controllers\ComentController;
-
+use App\Http\Controllers\Admin\VoucherClaimController;
 
 // Frontend routes (User) yang bisa diakses tanpa login
 Route::get('/', [RestaurantController::class, 'index'])->name('frontend.home');
@@ -44,6 +44,15 @@ Route::prefix('admin')->group(function () {
         Route::put('profile', [\App\Http\Controllers\Admin\ProfileController::class, 'update'])->name('admin.profile.update');
     });
     
+    // Kelola Data Klaim Voucher
+    Route::middleware(['auth:admins'])->group(function () {
+        Route::get('voucher-claims', [VoucherClaimController::class, 'index'])->name('admin.voucher.claims.index');
+        Route::get('voucher-claims/{id}', [VoucherClaimController::class, 'show'])->name('admin.voucher.claims.show');
+        Route::post('voucher-claims/{id}/approve', [VoucherClaimController::class, 'approve'])->name('admin.voucher.claims.approve');
+        Route::post('voucher-claims/{id}/reject', [VoucherClaimController::class, 'reject'])->name('admin.voucher.claims.reject');
+        Route::delete('voucher-claims/{id}', [VoucherClaimController::class, 'destroy'])->name('admin.voucher.claims.destroy'); 
+    });
+
 });
 
 Route::prefix('super-admin')->group(function () {

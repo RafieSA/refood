@@ -5,6 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Profile - Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+    <script>
+        tailwind.config = {
+        theme: {
+            extend: {
+            fontFamily: {
+                inter: ['Inter', 'sans-serif'],
+            },
+            colors: {
+                greenbrand: '#16a34a',
+                greenbrandhover: '#15803d',
+            }
+            }
+        }
+        }
+    </script>
 </head>
 <body class="bg-gray-100">
     <div class="container mx-auto p-4">
@@ -23,7 +39,7 @@
 
                 <!-- Restaurant Name -->
                 <div class="mb-4">
-                    <label for="Restaurant_Name" class="block text-sm font-medium text-gray-700">Restaurant Name</label>
+                    <label for="Restaurant_Name" class="block text-base font-bold text-black">Restaurant Name</label>
                     <input type="text" name="Restaurant_Name" id="Restaurant_Name" value="{{ old('Restaurant_Name', $admin->Restaurant_Name) }}" required
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-500 focus:ring-opacity-50">
                     @error('Restaurant_Name')
@@ -33,7 +49,7 @@
 
                 <!-- Restaurant Photo -->
                 <div class="mb-4">
-                    <label for="Restaurant_Photo" class="block text-sm font-medium text-gray-700">Restaurant Photo</label>
+                    <label for="Restaurant_Photo" class="block text-base font-bold text-black">Restaurant Photo</label>
                     @if ($admin->Restaurant_Photo)
                         <div class="mt-2">
                             <img src="{{ asset('storage/' . $admin->Restaurant_Photo) }}" alt="Restaurant Photo" class="h-24 w-24 object-cover rounded">
@@ -48,7 +64,7 @@
 
                 <!-- Submit Button -->
                 <div class="mt-6 flex items-center justify-end">
-                    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
+                    <button type="submit" class="bg-greenbrand hover:bg-greenbrandhover text-white px-4 py-2 rounded-lg">
                         Save Changes
                     </button>
                 </div>

@@ -44,6 +44,10 @@
                         <h3 class="font-semibold text-blue-600">View All Menu</h3>
                         <p class="text-sm text-gray-600 mt-1">Manage existing Menu listings</p>
                     </a>
+                    <a href="{{ route('admin.voucher.claims.index') }}" class="block p-4 border border-gray-200 rounded-md hover:bg-blue-50">
+                        <h3 class="font-semibold text-red-600">View Claimed Vouchers</h3>
+                        <p class="text-sm text-gray-600 mt-1">View and manage voucher claims submitted by users</p>
+                    </a>
                 </div>
             </div>
         </div>
