@@ -34,4 +34,11 @@ class VoucherClaimController extends Controller
         }
         return redirect()->route('admin.voucher.claims.index')->with('error', 'Data klaim tidak ditemukan.');
     }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $status = $request->input('status');
+        DB::table('discount_claims')->where('id', $id)->update(['status' => $status]);
+        return redirect()->route('admin.voucher.claims.index')->with('success', 'Status klaim berhasil diupdate.');
+    }
 }

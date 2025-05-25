@@ -64,13 +64,24 @@
                              {{ \Carbon\Carbon::parse($claim->created_at)->timezone('Asia/Jakarta')->format('d-m-Y H:i') }} WIB
                         </td>
                         <td class="px-4 py-2 text-center">
-                            <form action="{{ route('admin.voucher.claims.destroy', $claim->id) }}" method="POST" onsubmit="return confirm('Confirm deletion of this claim?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="bg-red-500 hover:bg-red-700 text-white px-3 py-1 rounded-lg">
-                                    Delete
+                            <div class="flex justify-center gap-2">
+                                <!-- button Edit Status -->
+                                <button
+                                    type="button"
+                                    onclick="openEditModal({{ $claim->id }}, '{{ $claim->status }}')"
+                                    class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded-lg"
+                                >
+                                    Edit
                                 </button>
-                            </form>
+                                <!-- button Hapus -->
+                                <form action="{{ route('admin.voucher.claims.destroy', $claim->id) }}" method="POST" onsubmit="return confirm('Confirm deletion of this claim?');" class="inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="bg-red-500 hover:bg-red-700 text-white px-3 py-1 rounded-lg">
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     @empty
@@ -88,5 +99,46 @@
             {{ $claims->withQueryString()->links() }}
         </div>
     </div>
+
+    <!-- Modal Edit Status -->
+<div id="edit-modal" class="hidden fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm relative">
+        <button class="absolute top-2 right-2 text-gray-400 hover:text-gray-600 text-2xl"
+        onclick="closeEditModal()">&times;</button>
+
+        <h2 class="text-lg font-semibold mb-4">Edit Claim Status</h2>
+        <form id="edit-status-form" method="POST">
+            @csrf
+            @method('PUT')
+            <input type="hidden" name="claim_id" id="edit-claim-id">
+            <div class="mb-4">
+                <label for="status" class="block mb-1 font-medium">Status</label>
+                <select name="status" id="edit-status" class="w-full border rounded px-3 py-2">
+                    <option value="pending">Belum Diambil</option>
+                    <option value="taken">Sudah Diambil</option>
+                </select>
+            </div>
+            <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
+                Save
+            </button>
+        </form>
+    </div>
+</div>
+
+
+
+    <script>
+    function openEditModal(id, status) {
+        document.getElementById('edit-modal').classList.remove('hidden');
+        document.getElementById('edit-claim-id').value = id;
+        document.getElementById('edit-status').value = status;
+        // Set action form
+        document.getElementById('edit-status-form').action = '{{ url("/admin/voucher-claims") }}/' + id + '/status';
+
+    }
+    function closeEditModal() {
+        document.getElementById('edit-modal').classList.add('hidden');
+    }
+    </script>
 </body>
 </html>

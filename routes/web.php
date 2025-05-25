@@ -51,6 +51,7 @@ Route::prefix('admin')->group(function () {
         Route::post('voucher-claims/{id}/approve', [VoucherClaimController::class, 'approve'])->name('admin.voucher.claims.approve');
         Route::post('voucher-claims/{id}/reject', [VoucherClaimController::class, 'reject'])->name('admin.voucher.claims.reject');
         Route::delete('voucher-claims/{id}', [VoucherClaimController::class, 'destroy'])->name('admin.voucher.claims.destroy'); 
+        Route::put('voucher-claims/{id}/status', [VoucherClaimController::class, 'updateStatus'])->name('admin.voucher.claims.updateStatus');
     });
 
 });
