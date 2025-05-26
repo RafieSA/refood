@@ -151,17 +151,29 @@
                             </p>
                         </div>
                         <div class="mt-8 mb-8 bg-white rounded-xl shadow-sm p-6 flex items-center space-x-6">
-                            <img src="{{ $admin->Restaurant_Photo ? asset('storage/' . $admin->Restaurant_Photo) : asset('default-restaurant.png') }}"
-                            alt="Foto Restoran"
-                            class="w-24 h-24 rounded-full object-cover border-2 border-green-500">
+                            <!-- Foto Restoran yang bisa diklik -->
+                            <a href="{{ route('frontend.restaurants.about', ['id' => is_array($restaurant) ? $restaurant['id'] : $restaurant->id]) }}" 
+                            class="block cursor-pointer hover:opacity-90 transition-opacity">
+                                <img src="{{ $admin->Restaurant_Photo ? asset('storage/' . $admin->Restaurant_Photo) : asset('default-restaurant.png') }}"
+                                    alt="Foto Restoran"
+                                    class="w-24 h-24 rounded-full object-cover border-2 border-green-500">
+                            </a>
                             <div>
-                                <h2 class="text-2xl font-bold text-gray-800 mb-1">{{ $admin->Restaurant_Name }}</h2>
+                                <!-- Nama Restoran yang bisa diklik -->
+                                <a href="{{ route('frontend.restaurants.about', ['id' => is_array($restaurant) ? $restaurant['id'] : $restaurant->id]) }}"
+                                class="block hover:text-green-600 transition-colors">
+                                    <h2 class="text-2xl font-bold text-gray-800 mb-1">{{ $admin->Restaurant_Name }}</h2>
+                                </a>
                                 <div class="flex items-center text-gray-600">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
-                                    <span>{{ is_array($restaurant) ? $restaurant['address'] : $restaurant->address }}</span>
+                                    <!-- Alamat Restoran yang bisa diklik -->
+                                    <a href="{{ route('frontend.restaurants.map', ['id' => is_array($restaurant) ? $restaurant['id'] : $restaurant->id]) }}"
+                                    class="hover:text-green-600 transition-colors">
+                                        <span>{{ is_array($restaurant) ? $restaurant['address'] : $restaurant->address }}</span>
+                                    </a>
                                 </div>
                             </div>
                         </div>

@@ -19,6 +19,8 @@ Route::get('/customer-service', function () {
     return view('customer-service');
 })->name('customer.service');
 Route::get('/articles/{id}', [ArticleController::class, 'show'])->name('frontend.articles.show');
+Route::get('/restaurants/{id}/about', [RestaurantController::class, 'about'])->name('frontend.restaurants.about');
+Route::get('/restaurants/{id}/map', [RestaurantController::class, 'map'])->name('frontend.restaurants.map');
 
 // Default login route (required by Laravel for redirect)
 Route::get('login', function() {

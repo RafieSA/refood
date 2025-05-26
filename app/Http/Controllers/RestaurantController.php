@@ -211,4 +211,43 @@ class RestaurantController extends Controller
             ]);
         }
     }
+
+    public function about($id)
+    {
+        try {
+            // Ambil data restoran dari database lokal
+            $restaurant = Restaurant::with('admin')->find($id);
+
+            // Jika tidak ditemukan di database lokal, coba ambil dari Supabase
+            if (!$restaurant) {
+                $response = Http::withHeaders([
+                    'apikey' => env('SUPABASE_KEY'),
+                    'Authorization' => 'Bearer ' . env('SUPABASE_KEY')
+                ])->get(env('SUPABASE_URL') . '/rest/v1/restaurants', [
+                    'id' => 'eq.' . $id,
+                    'select' => '*'
+                ]);
+                $restaurant = $response->json()[0] ?? null;
+            }
+
+            if (!$restaurant) {
+                abort(404, 'Restaurant not found');
+            }
+
+            // Ambil data admin
+            $admin = null;
+            if (is_object($restaurant) && isset($restaurant->admin_id)) {
+                $admin = \App\Models\Admin::find($restaurant->admin_id);
+            } elseif (is_array($restaurant) && isset($restaurant['admin_id'])) {
+                $admin = \App\Models\Admin::find($restaurant['admin_id']);
+            } elseif (isset($restaurant->admin)) {
+                $admin = $restaurant->admin;
+            }
+            
+            return view('restaurants.about', compact('restaurant', 'admin'));
+        } catch (\Exception $e) {
+            Log::error('Error fetching restaurant for about page', ['error' => $e->getMessage()]);
+            abort(500, 'Server error while fetching restaurant details');
+        }
+    }
 }
