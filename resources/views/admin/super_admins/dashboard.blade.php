@@ -105,14 +105,22 @@
         <div id="tab-artikel" class="tab-content hidden">
             <h2 class="text-xl font-semibold mb-4">Artikel</h2>
             <a href="{{ route('articles.create') }}" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded mb-4 inline-block">Tambah Artikel</a>
+            
             <!-- Search Form -->
-            <form action="{{ route('articles.index') }}" method="GET" class="mb-4 flex items-center">
+            <form action="{{ route('super_admin.dashboard') }}#tab-artikel" method="GET" class="mb-4 flex items-center">
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari judul atau deskripsi artikel..."
                     class="border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
                 <button type="submit" class="ml-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
                     Cari
                 </button>
+                @if(request('search'))
+                    <a href="{{ route('super_admin.dashboard') }}#tab-artikel" class="ml-2 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded transition">
+                        Reset
+                    </a>
+                @endif
             </form>
+
+            <!-- Tabel Artikel -->
             <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
                 <thead>
                     <tr>
