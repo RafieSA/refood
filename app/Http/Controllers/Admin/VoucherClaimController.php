@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class VoucherClaimController extends Controller
 {
@@ -37,8 +38,41 @@ class VoucherClaimController extends Controller
 
     public function updateStatus(Request $request, $id)
     {
-        $status = $request->input('status');
-        DB::table('discount_claims')->where('id', $id)->update(['status' => $status]);
-        return redirect()->route('admin.voucher.claims.index')->with('success', 'Status klaim berhasil diupdate.');
+        // Validasi input - hanya 'pending' dan 'used' yang valid sesuai constraint database
+        $request->validate([
+            'status' => 'required|in:pending,used'
+        ]);
+
+        try {
+            // Cek apakah claim exists
+            $claim = DB::table('discount_claims')->where('id', $id)->first();
+            
+            if (!$claim) {
+                return redirect()->route('admin.voucher.claims.index')->with('error', 'Data klaim tidak ditemukan.');
+            }
+
+            // Cek apakah status berubah
+            if ($claim->status === $request->status) {
+                return redirect()->route('admin.voucher.claims.index')->with('error', 'Status sudah sama, tidak ada perubahan.');
+            }
+
+            // Update status
+            $updated = DB::table('discount_claims')
+                ->where('id', $id)
+                ->update([
+                    'status' => $request->status,
+                    'updated_at' => now()
+                ]);
+
+            if ($updated) {
+                $statusText = $request->status === 'pending' ? 'Belum Diambil' : 'Sudah Diambil';
+                return redirect()->route('admin.voucher.claims.index')->with('success', "Status klaim berhasil diubah menjadi: {$statusText}");
+            } else {
+                return redirect()->route('admin.voucher.claims.index')->with('error', 'Gagal mengupdate status klaim.');
+            }
+
+        } catch (\Exception $e) {
+            return redirect()->route('admin.voucher.claims.index')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 }

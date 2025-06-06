@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RestaurantController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ArticleController;
@@ -49,11 +50,11 @@ Route::prefix('admin')->group(function () {
     // Kelola Data Klaim Voucher
     Route::middleware(['auth:admins'])->group(function () {
         Route::get('voucher-claims', [VoucherClaimController::class, 'index'])->name('admin.voucher.claims.index');
+        Route::delete('voucher-claims/{id}', [VoucherClaimController::class, 'destroy'])->name('admin.voucher.claims.destroy');
+        Route::put('voucher-claims/{id}/status', [VoucherClaimController::class, 'updateStatus'])->name('admin.voucher.claims.updateStatus');
         Route::get('voucher-claims/{id}', [VoucherClaimController::class, 'show'])->name('admin.voucher.claims.show');
         Route::post('voucher-claims/{id}/approve', [VoucherClaimController::class, 'approve'])->name('admin.voucher.claims.approve');
         Route::post('voucher-claims/{id}/reject', [VoucherClaimController::class, 'reject'])->name('admin.voucher.claims.reject');
-        Route::delete('voucher-claims/{id}', [VoucherClaimController::class, 'destroy'])->name('admin.voucher.claims.destroy'); 
-        Route::put('voucher-claims/{id}/status', [VoucherClaimController::class, 'updateStatus'])->name('admin.voucher.claims.updateStatus');
     });
 
 });

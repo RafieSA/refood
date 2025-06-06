@@ -7,6 +7,32 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
+    @if(session('success'))
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mx-4 mt-4" role="alert">
+            <strong class="font-bold">Berhasil!</strong>
+            <span class="block sm:inline">{{ session('success') }}</span>
+            <span class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="this.parentElement.style.display='none'">
+                <svg class="fill-current h-6 w-6 text-green-500 cursor-pointer" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                    <title>Close</title>
+                    <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/>
+                </svg>
+            </span>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mx-4 mt-4" role="alert">
+            <strong class="font-bold">Error!</strong>
+            <span class="block sm:inline">{{ session('error') }}</span>
+            <span class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="this.parentElement.style.display='none'">
+                <svg class="fill-current h-6 w-6 text-red-500 cursor-pointer" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                    <title>Close</title>
+                    <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/>
+                </svg>
+            </span>
+        </div>
+    @endif
+
     <div class="container mx-auto p-4">
         <!-- back ke dashboard -->
         <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center mb-4 text-green-700 hover:text-green-900 font-semibold">
@@ -21,10 +47,10 @@
             <input 
                 type="text" 
                 name="search" 
-                value="{{ $search }}" 
+                value="{{ $search ?? '' }}" 
                 placeholder="Search user voucher claims..."
                 class="w-full rounded-l-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-            >
+            />
             <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-r-md">
                 Search
             </button>
@@ -57,7 +83,7 @@
                         <td class="px-4 py-2 text-center">
                             <span class="inline-block px-2 py-1 rounded 
                                 {{ $claim->status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800' }}">
-                                {{ ucfirst($claim->status) }}
+                                {{ $claim->status === 'pending' ? 'Belum Diambil' : 'Sudah Diambil' }}
                             </span>
                         </td>
                         <td class="px-4 py-2 text-center">
@@ -68,8 +94,9 @@
                                 <!-- button Edit Status -->
                                 <button
                                     type="button"
-                                    onclick="openEditModal({{ $claim->id }}, '{{ $claim->status }}')"
-                                    class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded-lg"
+                                    class="edit-btn bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded-lg"
+                                    data-id="{{ $claim->id }}"
+                                    data-status="{{ $claim->status }}"
                                 >
                                     Edit
                                 </button>
@@ -115,7 +142,7 @@
                 <label for="status" class="block mb-1 font-medium">Status</label>
                 <select name="status" id="edit-status" class="w-full border rounded px-3 py-2">
                     <option value="pending">Belum Diambil</option>
-                    <option value="taken">Sudah Diambil</option>
+                    <option value="used">Sudah Diambil</option>
                 </select>
             </div>
             <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
@@ -126,19 +153,68 @@
 </div>
 
 
+<script>
+function openEditModal(id, status) {
+    console.log('🔧 Opening edit modal for ID:', id, 'Current Status:', status);
 
-    <script>
-    function openEditModal(id, status) {
-        document.getElementById('edit-modal').classList.remove('hidden');
-        document.getElementById('edit-claim-id').value = id;
-        document.getElementById('edit-status').value = status;
-        // Set action form
-        document.getElementById('edit-status-form').action = '{{ url("/admin/voucher-claims") }}/' + id + '/status';
+    // Ensure `status` is properly escaped if it's dynamically inserted
+    document.getElementById('edit-modal').classList.remove('hidden');
+    document.getElementById('edit-claim-id').value = id;
+    document.getElementById('edit-status').value = status;
 
+    const form = document.getElementById('edit-status-form');
+    form.action = `/admin/voucher-claims/${id}/status`;
+}
+
+function closeEditModal() {
+    console.log('❌ Closing modal');
+    document.getElementById('edit-modal').classList.add('hidden');
+}
+
+// Debug form submission
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('✅ DOM Content Loaded');
+    
+    const form = document.getElementById('edit-status-form');
+    
+    if (form) {
+        console.log('✅ Form found');
+        form.addEventListener('submit', function(e) {
+            const formData = new FormData(this);
+            console.log('🚀 Form submitted to:', this.action);
+            console.log('📝 Form data:');
+            
+            // Loop untuk menampilkan semua form data
+            for (let [key, value] of formData.entries()) {
+                console.log('   ' + key + ': ' + value);
+            }
+            
+            // Tampilkan loading state
+            const submitBtn = this.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = 'Saving...';
+                
+                // Reset button setelah 3 detik (fallback)
+                setTimeout(function() {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Save';
+                }, 3000);
+            }
+        });
+    } else {
+        console.error('❌ Form with ID "edit-status-form" not found!');
     }
-    function closeEditModal() {
-        document.getElementById('edit-modal').classList.add('hidden');
-    }
-    </script>
+
+    // Event delegation for edit buttons
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('edit-btn')) {
+            const id = e.target.getAttribute('data-id');
+            const status = e.target.getAttribute('data-status');
+            openEditModal(id, status);
+        }
+    });
+});
+</script>
 </body>
 </html>
