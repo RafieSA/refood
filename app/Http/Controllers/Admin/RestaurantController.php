@@ -60,12 +60,26 @@ class RestaurantController extends Controller
     public function index(Request $request)
     {
         if (auth()->guard('super_admins')->check()) {
-            // Super admin: lihat semua restaurant
-            $restaurants = Restaurant::with('admin')->get();
+            $search = $request->input('search');
+            $restaurants = \App\Models\Restaurant::with('admin')
+                ->when($search, function ($query, $search) {
+                    $query->whereHas('admin', function ($q) use ($search) {
+                            $q->where('Restaurant_Name', 'ilike', "%{$search}%");
+                        })
+                        ->orWhere('food_name', 'ilike', "%{$search}%")
+                        ->orWhere('food_type', 'ilike', "%{$search}%");
+                })
+                ->get();
         } else {
-            // Admin restaurant: hanya lihat miliknya
             $adminId = auth()->guard('admins')->id();
-            $restaurants = Restaurant::with('admin')->where('admin_id', $adminId)->get();
+            $search = $request->input('search');
+            $restaurants = \App\Models\Restaurant::with('admin')
+                ->where('admin_id', $adminId)
+                ->when($search, function ($query, $search) {
+                    $query->where('food_name', 'ilike', "%{$search}%")
+                          ->orWhere('food_type', 'ilike', "%{$search}%");
+                })
+                ->get();
         }
         return view('admin.restaurants.index', compact('restaurants'));
     }
