@@ -9,12 +9,19 @@
 </head>
 <body class="bg-gray-100">
     <div class="container mx-auto p-4">
-        <h1 class="text-2xl font-bold mb-4">Admin Dashboard ReFood</h1>
+        <div class="mb-6">
+            <h1 class="text-3xl font-bold text-gray-800">Admin Dashboard ReFood</h1>
+            @if(auth()->guard('admins')->check() && auth()->guard('admins')->user()->Restaurant_Name)
+                <p class="text-xl text-green-600 font-medium mt-1">{{ auth()->guard('admins')->user()->Restaurant_Name }}</p>
+            @else
+                <p class="text-lg text-gray-500 mt-1">Restaurant Name Not Set</p>
+            @endif
+        </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <!-- Card: Total Restaurants -->
+            <!-- Card: Total Menus -->
             <div class="bg-white shadow-md rounded-lg p-4">
-                <h2 class="text-lg font-semibold">Total Restaurants</h2>
+                <h2 class="text-lg font-semibold">Total Menus</h2>
                 <p class="text-3xl font-bold text-blue-500">{{ $totalRestaurants }}</p>
             </div>
 
