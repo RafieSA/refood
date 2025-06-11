@@ -59,29 +59,24 @@ class RestaurantController extends Controller
      */
     public function index(Request $request)
     {
-        if (auth()->guard('super_admins')->check()) {
-            $search = $request->input('search');
-            $restaurants = \App\Models\Restaurant::with('admin')
-                ->when($search, function ($query, $search) {
-                    $query->whereHas('admin', function ($q) use ($search) {
-                            $q->where('Restaurant_Name', 'ilike', "%{$search}%");
-                        })
-                        ->orWhere('food_name', 'ilike', "%{$search}%")
-                        ->orWhere('food_type', 'ilike', "%{$search}%");
+        $search = $request->input('search');
+        $category = $request->input('category');
+
+        $restaurants = \App\Models\Restaurant::with('admin')
+            ->when($category, function ($query, $category) {
+                $query->where('food_type', 'ilike', $category);
+            })
+            ->when($search, function ($query, $search) {
+                $query->whereHas('admin', function ($q) use ($search) {
+                    $q->where('Restaurant_Name', 'ilike', "%{$search}%");
                 })
-                ->get();
-        } else {
-            $adminId = auth()->guard('admins')->id();
-            $search = $request->input('search');
-            $restaurants = \App\Models\Restaurant::with('admin')
-                ->where('admin_id', $adminId)
-                ->when($search, function ($query, $search) {
-                    $query->where('food_name', 'ilike', "%{$search}%")
-                          ->orWhere('food_type', 'ilike', "%{$search}%");
-                })
-                ->get();
-        }
-        return view('admin.restaurants.index', compact('restaurants'));
+                ->orWhere('food_name', 'ilike', "%{$search}%");
+            })
+            ->get();
+
+        $articles = Article::orderBy('uploaded_at', 'desc')->take(3)->get();
+
+        return view('restaurants.index', compact('restaurants', 'articles', 'category'));
     }
 
     /**

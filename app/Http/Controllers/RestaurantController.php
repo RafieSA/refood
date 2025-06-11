@@ -14,8 +14,12 @@ class RestaurantController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
+        $category = $request->input('category');
 
         $restaurants = \App\Models\Restaurant::with('admin')
+            ->when($category, function ($query, $category) {
+                $query->where('food_type', $category);
+            })
             ->when($search, function ($query, $search) {
                 $query->whereHas('admin', function ($q) use ($search) {
                     $q->where('Restaurant_Name', 'ilike', "%{$search}%");
@@ -26,7 +30,7 @@ class RestaurantController extends Controller
 
         $articles = Article::orderBy('uploaded_at', 'desc')->take(3)->get(); // Ambil 3 artikel terbaru
 
-        return view('restaurants.index', compact('restaurants', 'articles'));
+        return view('restaurants.index', compact('restaurants', 'articles', 'category'));
     }
 
     public function show($id)

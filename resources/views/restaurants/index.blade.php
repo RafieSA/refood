@@ -145,9 +145,9 @@
         <div class="container mx-auto px-4 mb-8">
             <div class="flex overflow-x-auto space-x-4 hide-scrollbar py-2">
                 @foreach($categoryList as $cat)
-                    <a href="?category={{ $cat['key'] }}"
+                    <a href="?category={{ $cat['label'] }}"
                        class="flex items-center px-6 py-3 rounded-full shadow-md bg-white border transition
-                           {{ $selectedCategory === $cat['key'] ? 'border-green-600 bg-green-50 text-green-700 font-semibold' : 'border-gray-200 text-gray-700 hover:bg-green-50' }}">
+                           {{ $selectedCategory === strtolower($cat['key']) ? 'border-green-600 bg-green-50 text-green-700 font-semibold' : 'border-gray-200 text-gray-700 hover:bg-green-50' }}">
                         {!! $cat['icon'] !!}
                         <span class="whitespace-nowrap">{{ $cat['label'] }}</span>
                     </a>
