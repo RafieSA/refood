@@ -47,8 +47,9 @@ class Restaurant extends Model
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Restaurant;
 use Illuminate\Http\Request;
+use App\Models\Restaurant;
+use App\Models\Article;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -74,9 +75,8 @@ class RestaurantController extends Controller
             })
             ->get();
 
-        $articles = Article::orderBy('uploaded_at', 'desc')->take(3)->get();
-
-        return view('restaurants.index', compact('restaurants', 'articles', 'category'));
+        // Tidak perlu $articles di halaman admin
+        return view('admin.restaurants.index', compact('restaurants', 'category'));
     }
 
     /**
