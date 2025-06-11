@@ -36,11 +36,11 @@
                         <h3 class="font-semibold text-yellow-600">Edit Profile</h3>
                         <p class="text-sm text-gray-600 mt-1">Update your restaurant name and photo</p>
                     </a>
-                    <a href="{{ route('restaurants.create') }}" class="block p-4 border border-gray-200 rounded-md hover:bg-green-50">
+                    <a href="{{ route('admin.restaurants.create') }}" class="block p-4 border border-gray-200 rounded-md hover:bg-green-50">
                         <h3 class="font-semibold text-green-600">Add New Menu</h3>
                         <p class="text-sm text-gray-600 mt-1">Create a new Menu with discount offer</p>
                     </a>
-                    <a href="{{ route('restaurants.index') }}" class="block p-4 border border-gray-200 rounded-md hover:bg-blue-50">
+                    <a href="{{ route('admin.restaurants.index') }}" class="block p-4 border border-gray-200 rounded-md hover:bg-blue-50">
                         <h3 class="font-semibold text-blue-600">View All Menu</h3>
                         <p class="text-sm text-gray-600 mt-1">Manage existing Menu listings</p>
                     </a>

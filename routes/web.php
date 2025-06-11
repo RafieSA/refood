@@ -39,16 +39,23 @@ Route::prefix('admin')->group(function () {
         \App\Http\Middleware\IsAdmin::class,
     ])->group(function () {
         Route::get('dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
-        // CRUD restaurants
-        Route::resource('restaurants', \App\Http\Controllers\Admin\RestaurantController::class);
+        
+        // CRUD restaurants dengan route names yang benar
+        Route::resource('restaurants', \App\Http\Controllers\Admin\RestaurantController::class)->names([
+            'index' => 'admin.restaurants.index',
+            'create' => 'admin.restaurants.create',
+            'store' => 'admin.restaurants.store',
+            'show' => 'admin.restaurants.show',
+            'edit' => 'admin.restaurants.edit',
+            'update' => 'admin.restaurants.update',
+            'destroy' => 'admin.restaurants.destroy',
+        ]);
 
         // CRUD profile admin
         Route::get('profile', [\App\Http\Controllers\Admin\ProfileController::class, 'edit'])->name('admin.profile.edit');
         Route::put('profile', [\App\Http\Controllers\Admin\ProfileController::class, 'update'])->name('admin.profile.update');
-    });
-    
-    // Kelola Data Klaim Voucher
-    Route::middleware(['auth:admins'])->group(function () {
+        
+        // Kelola Data Klaim Voucher
         Route::get('voucher-claims', [VoucherClaimController::class, 'index'])->name('admin.voucher.claims.index');
         Route::delete('voucher-claims/{id}', [VoucherClaimController::class, 'destroy'])->name('admin.voucher.claims.destroy');
         Route::put('voucher-claims/{id}/status', [VoucherClaimController::class, 'updateStatus'])->name('admin.voucher.claims.updateStatus');
@@ -56,7 +63,6 @@ Route::prefix('admin')->group(function () {
         Route::post('voucher-claims/{id}/approve', [VoucherClaimController::class, 'approve'])->name('admin.voucher.claims.approve');
         Route::post('voucher-claims/{id}/reject', [VoucherClaimController::class, 'reject'])->name('admin.voucher.claims.reject');
     });
-
 });
 
 Route::prefix('super-admin')->group(function () {

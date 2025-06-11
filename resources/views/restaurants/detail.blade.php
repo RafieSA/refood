@@ -7,6 +7,17 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            overflow-x: hidden;
+        }
         body {
             font-family: 'Poppins', sans-serif;
             background-color: #f8fafc;
@@ -27,9 +38,40 @@
         }
     </style>
 </head>
+<body class="bg-gray-50 m-0 p-0">
+    <!-- Navbar -->
+    <nav class="bg-white shadow-md fixed w-full top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="{{ route('frontend.home') }}" class="flex items-center hover:opacity-80 transition-opacity">
+                        <h1 class="text-2xl font-bold text-green-600">ReFood</h1>
+                        <span class="ml-2 text-gray-600 text-sm hidden sm:inline">All Discounts is Here!</span>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <!-- Search Form in Navbar -->
+                    <form action="{{ route('frontend.restaurants.index') }}" method="GET" class="flex items-center">
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari restoran/menu..."
+                            class="border border-gray-300 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <button type="submit" class="ml-2 text-green-600 hover:text-green-800">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </button>
+                    </form>
+                    <!-- Customer Service Link -->
+                    <a href="{{ route('customer.service') }}" target="_blank" class="ml-4 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded transition">
+                        Customer Service
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
     <!-- Main Content -->
-    <div class="container mx-auto px-4 py-8">
-        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+    <div class="w-full pt-16">
+        <div class="bg-white shadow-sm overflow-hidden">
             <!-- Image Gallery -->
             <div class="relative h-72 md:h-96 w-full overflow-hidden image-gallery">
                 <img src="{{ is_array($restaurant) ? $restaurant['photo_url'] : $restaurant->photo_url }}" 
@@ -47,8 +89,8 @@
                 @endif
             </div>
             
-            <!-- Content -->
-            <div class="p-6 md:p-8">
+            <!-- Content dengan padding internal -->
+            <div class="px-4 md:px-8 py-6 md:py-8">
                 <div class="flex flex-wrap items-start justify-between gap-4 mb-6">
                     <div>
                         <h1 class="text-3xl font-bold text-gray-800 mb-2">
@@ -242,8 +284,8 @@
     </div>
 
     <!-- Customer Reviews Section -->
-    <div class="container mx-auto px-4 py-8">
-        <div class="bg-white rounded-xl shadow-sm p-6 md:p-8">
+    <div class="w-full py-8">
+        <div class="bg-white shadow-sm px-4 md:px-8 py-6 md:py-8">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-2xl font-semibold text-gray-800">Customer Reviews</h2>
                 <button
@@ -301,7 +343,6 @@
                         <label for="star{{ $i }}" class="cursor-pointer star-label" data-value="{{ $i }}">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 star-svg text-gray-300" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                            </svg>
                         </label>
                     @endfor
                 </div>
@@ -348,8 +389,8 @@
 </script>
 
     <!-- FAQ Section -->
-    <div class="container mx-auto px-4 py-8">
-        <div class="bg-white rounded-xl shadow-sm p-6 md:p-8">
+    <div class="w-full py-8">
+        <div class="bg-white shadow-sm px-4 md:px-8 py-6 md:py-8">
             <h2 class="text-2xl font-semibold text-gray-800 mb-6">Frequently Asked Questions</h2>
             
             <div class="space-y-4">
@@ -396,8 +437,8 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-white mt-12">
-        <div class="container mx-auto px-4 py-12">
+    <footer class="bg-gray-800 text-white w-full m-0">
+        <div class="py-12 px-4 md:px-8">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <!-- Kolom 1: Logo dan Social Media -->
                 <div>
@@ -515,4 +556,5 @@
             });
         });
     </script>
+</body>
 </html>
