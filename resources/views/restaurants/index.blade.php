@@ -18,8 +18,10 @@
         <div class="container mx-auto px-4">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
-                    <h1 class="text-2xl font-bold text-green-600">ReFood</h1>
-                    <span class="ml-2 text-gray-600 text-sm hidden sm:inline">All Discounts is Here!</span>
+                    <a href="{{ route('frontend.home') }}" class="flex items-center hover:opacity-80 transition-opacity">
+                        <h1 class="text-2xl font-bold text-green-600">ReFood</h1>
+                        <span class="ml-2 text-gray-600 text-sm hidden sm:inline">All Discounts is Here!</span>
+                    </a>
                 </div>
                 <div class="flex items-center space-x-4">
                     <!-- Search Form in Navbar -->
