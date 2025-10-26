@@ -456,7 +456,7 @@
                     <div class="flex-shrink-0 w-10 h-10 bg-green-600 text-white rounded-full flex items-center justify-center font-bold mr-4">2</div>
                     <div>
                         <h3 class="font-semibold text-gray-800 mb-1">Klaim Diskon</h3>
-                        <p class="text-gray-600 text-sm">Klik "Klaim Diskon" untuk mendapatkan kode promo dan tunjukkan di restoran</p>
+                        <p class="text-gray-600 text-sm">Klik "Claim Discount" untuk mendapatkan kode promo dan tunjukkan di restoran</p>
                     </div>
                 </div>
                 
