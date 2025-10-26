@@ -4,6 +4,43 @@
 
 ---
 
+## 📌 PROJECT CONTEXT & PURPOSE
+
+**Project Name**: REFOOD - Food Waste Reduction Platform  
+**Original Context**: Tugas Besar Mata Kuliah Proyek Perangkat Lunak (Semester 6)  
+**Institution**: Telkom University Bandung - S1 Sistem Informasi  
+**Current Status**: Semester 7 - Portfolio Enhancement Phase
+
+**Current Purpose (2025-10-26):**
+This project is being polished and finalized as a **portfolio project** for:
+- **BNSP (Badan Nasional Sertifikasi Profesi) Certification**
+- **Skema: Web Developer**
+- **Requirement**: Portfolio demonstration of web development competencies
+
+**Why REFOOD?**
+During flashback of university projects, REFOOD stood out as having:
+- Real-world problem solving (food waste reduction)
+- Full-stack implementation (Laravel + Supabase)
+- Modern UI/UX with accessibility features
+- Complete CRUD operations
+- Potential for professional showcase
+
+**Goal:**
+Transform academic project into **production-quality portfolio piece** that demonstrates:
+1. ✅ Clean, maintainable code
+2. ✅ Modern web development practices
+3. ✅ Accessibility compliance (WCAG 2.1 AA)
+4. ✅ Responsive design (mobile-first)
+5. ✅ Localization (Indonesian market)
+6. ✅ Performance optimization
+7. ✅ Professional documentation
+8. ✅ Real-world deployment readiness
+
+**Target Completion**: Before BNSP certification assessment  
+**Priority**: Finalization & professional polish over new feature addition
+
+---
+
 ## 🤖 AI ASSISTANT WORKING GUIDELINES
 
 > **CRITICAL**: Read and follow these guidelines in EVERY session to ensure high-quality, accurate, and expectation-aligned work.
