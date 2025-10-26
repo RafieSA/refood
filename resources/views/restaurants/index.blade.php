@@ -24,10 +24,16 @@
                     </a>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <!-- Search Form in Navbar -->
-                    <form action="{{ route('frontend.restaurants.index') }}" method="GET" class="flex items-center">
-                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari restoran/menu..."
-                            class="border border-gray-300 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
+                    <!-- Search Form in Navbar with Autocomplete -->
+                    <form action="{{ route('frontend.restaurants.index') }}" method="GET" class="flex items-center relative">
+                        <div class="relative">
+                            <input type="text" id="searchInput" name="search" value="{{ request('search') }}" 
+                                   placeholder="Cari restoran/menu..." autocomplete="off"
+                                   class="border border-gray-300 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 w-64">
+                            <div id="autocompleteResults" class="hidden absolute z-50 w-full bg-white border border-gray-200 rounded-lg shadow-lg mt-1 max-h-60 overflow-y-auto">
+                                <!-- Autocomplete results will appear here -->
+                            </div>
+                        </div>
                         <button type="submit" class="ml-2 text-green-600 hover:text-green-800">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -355,5 +361,71 @@
             </div>
         </div>
     </footer>
+
+    <!-- Autocomplete JavaScript -->
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const autocompleteResults = document.getElementById('autocompleteResults');
+        
+        // All restaurants data for autocomplete
+        const restaurants = @json($restaurants->map(function($r) {
+            return [
+                'food_name' => is_array($r) ? $r['food_name'] : $r->food_name,
+                'restaurant_name' => is_array($r) ? ($r['restaurant_name'] ?? '') : ($r->restaurant_name ?? ''),
+                'food_type' => is_array($r) ? ($r['food_type'] ?? '') : ($r->food_type ?? ''),
+            ];
+        }));
+        
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+            
+            if (query.length < 2) {
+                autocompleteResults.classList.add('hidden');
+                return;
+            }
+            
+            const filtered = restaurants.filter(r => 
+                r.food_name.toLowerCase().includes(query) ||
+                r.restaurant_name.toLowerCase().includes(query) ||
+                r.food_type.toLowerCase().includes(query)
+            ).slice(0, 5); // Limit to 5 results
+            
+            if (filtered.length > 0) {
+                autocompleteResults.innerHTML = filtered.map(r => `
+                    <div class="px-4 py-2 hover:bg-green-50 cursor-pointer autocomplete-item" data-value="${r.food_name}">
+                        <div class="font-medium text-gray-800">${r.food_name}</div>
+                        <div class="text-xs text-gray-500">${r.restaurant_name} • ${r.food_type}</div>
+                    </div>
+                `).join('');
+                autocompleteResults.classList.remove('hidden');
+                
+                // Add click event to autocomplete items
+                document.querySelectorAll('.autocomplete-item').forEach(item => {
+                    item.addEventListener('click', function() {
+                        searchInput.value = this.dataset.value;
+                        autocompleteResults.classList.add('hidden');
+                        searchInput.form.submit();
+                    });
+                });
+            } else {
+                autocompleteResults.innerHTML = '<div class="px-4 py-2 text-gray-500 text-sm">No results found</div>';
+                autocompleteResults.classList.remove('hidden');
+            }
+        });
+        
+        // Close autocomplete on click outside
+        document.addEventListener('click', function(e) {
+            if (!searchInput.contains(e.target) && !autocompleteResults.contains(e.target)) {
+                autocompleteResults.classList.add('hidden');
+            }
+        });
+        
+        // Close autocomplete on ESC key
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                autocompleteResults.classList.add('hidden');
+            }
+        });
+    </script>
 </body>
 </html>

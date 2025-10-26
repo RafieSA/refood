@@ -8,4 +8,19 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+    build: {
+        minify: 'terser',
+        terserOptions: {
+            compress: {
+                drop_console: true, // Remove console.log in production
+            },
+        },
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    vendor: ['axios'], // Split vendor code
+                },
+            },
+        },
+    },
 });

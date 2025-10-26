@@ -44,7 +44,7 @@ class RestaurantController extends Controller
         return view('restaurants.index', compact('restaurants', 'articles', 'category', 'categories'));
     }
 
-    public function show($id)
+    public function show($id, Request $request)
     {
         try {
             // Ambil data restoran dari database lokal
@@ -77,16 +77,34 @@ class RestaurantController extends Controller
                 $admin = $restaurant->admin;
             }
             
-            // Ambil comments HANYA untuk restaurant ini dengan pagination
-            $coments = \App\Models\Coment::where('restaurant_id', $id)
-                ->orderBy('created_at', 'desc')
-                ->paginate(10); // 10 comments per page
+            // Get sort parameter (default: newest)
+            $sort = $request->input('sort', 'newest');
+            
+            // Ambil comments HANYA untuk restaurant ini dengan pagination dan sorting
+            $query = \App\Models\Coment::where('restaurant_id', $id);
+            
+            switch ($sort) {
+                case 'highest':
+                    $query->orderBy('rating', 'desc')->orderBy('created_at', 'desc');
+                    break;
+                case 'lowest':
+                    $query->orderBy('rating', 'asc')->orderBy('created_at', 'desc');
+                    break;
+                case 'oldest':
+                    $query->orderBy('created_at', 'asc');
+                    break;
+                default: // newest
+                    $query->orderBy('created_at', 'desc');
+                    break;
+            }
+            
+            $coments = $query->paginate(10)->appends(['sort' => $sort]);
             
             // Hitung average rating dan total reviews dari semua comments (tidak hanya halaman saat ini)
             $totalReviews = \App\Models\Coment::where('restaurant_id', $id)->count();
             $averageRating = \App\Models\Coment::where('restaurant_id', $id)->avg('rating') ?? 0;
             
-            return view('restaurants.detail', compact('restaurant', 'admin', 'coments', 'averageRating', 'totalReviews'));
+            return view('restaurants.detail', compact('restaurant', 'admin', 'coments', 'averageRating', 'totalReviews', 'sort'));
         } catch (\Exception $e) {
             Log::error('Error fetching restaurant', ['error' => $e->getMessage()]);
             abort(500, 'Server error while fetching restaurant details');
