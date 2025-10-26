@@ -77,14 +77,14 @@ class RestaurantController extends Controller
                 $admin = $restaurant->admin;
             }
             
-            // Ambil comments HANYA untuk restaurant ini
+            // Ambil comments HANYA untuk restaurant ini dengan pagination
             $coments = \App\Models\Coment::where('restaurant_id', $id)
                 ->orderBy('created_at', 'desc')
-                ->get();
+                ->paginate(10); // 10 comments per page
             
-            // Hitung average rating dan total reviews
-            $averageRating = $coments->avg('rating') ?? 0;
-            $totalReviews = $coments->count();
+            // Hitung average rating dan total reviews dari semua comments (tidak hanya halaman saat ini)
+            $totalReviews = \App\Models\Coment::where('restaurant_id', $id)->count();
+            $averageRating = \App\Models\Coment::where('restaurant_id', $id)->avg('rating') ?? 0;
             
             return view('restaurants.detail', compact('restaurant', 'admin', 'coments', 'averageRating', 'totalReviews'));
         } catch (\Exception $e) {

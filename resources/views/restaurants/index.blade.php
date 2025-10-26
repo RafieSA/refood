@@ -53,44 +53,43 @@
 
     <!-- Main Content -->
     <div class="container mx-auto px-4 -mt-10">
+        <!-- Success Toast Notification -->
         @if(session('success'))
-            <div id="success-alert" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6 mx-4" role="alert">
-                <strong class="font-bold">Berhasil!</strong>
-                <span class="block sm:inline">{{ session('success') }}</span>
-                
-                <!-- Loading bar -->
-                <div class="mt-2 h-1 w-full bg-green-200 rounded-full overflow-hidden">
-                    <div id="success-progress" class="h-1 bg-green-600 rounded-full w-0"></div>
+        <div id="success-toast" class="fixed top-4 right-4 z-50 bg-white rounded-lg shadow-2xl overflow-hidden transform transition-all duration-300 max-w-md animate-slide-in">
+            <div class="flex items-start p-4">
+                <div class="flex-shrink-0">
+                    <svg class="h-6 w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
                 </div>
+                <div class="ml-3 flex-1">
+                    <p class="text-sm font-medium text-gray-900">Success!</p>
+                    <p class="mt-1 text-sm text-gray-500">{{ session('success') }}</p>
+                </div>
+                <button onclick="document.getElementById('success-toast').remove()" class="ml-4 text-gray-400 hover:text-gray-500">
+                    <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                    </svg>
+                </button>
             </div>
-
-            <!-- Script untuk loading dan menghilangkan pesan -->
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    const progressBar = document.getElementById('success-progress');
-                    const alert = document.getElementById('success-alert');
-                    const duration = 5000; // 5 detik
-                    const interval = 20;
-                    let width = 0;
-                    let timePassed = 0;
-                    
-                    // Fungsi untuk menggerakan progress bar dan menghilangkan pesan
-                    const timer = setInterval(function() {
-                        timePassed += interval;
-                        width = (timePassed / duration) * 100;
-                        progressBar.style.width = width + '%';
-                        
-                        if (width >= 100) {
-                            clearInterval(timer);
-                            alert.style.opacity = '0';
-                            alert.style.transition = 'opacity 0.5s ease-out';
-                            setTimeout(function() {
-                                alert.style.display = 'none';
-                            }, 500);
-                        }
-                    }, interval);
-                });
-            </script>
+            <div class="bg-green-500 h-1">
+                <div id="toast-progress" class="bg-green-600 h-1 transition-all duration-[5000ms] ease-linear" style="width: 0%"></div>
+            </div>
+        </div>
+        <script>
+            // Auto hide toast after 5 seconds
+            setTimeout(function() {
+                document.getElementById('toast-progress').style.width = '100%';
+            }, 10);
+            setTimeout(function() {
+                const toast = document.getElementById('success-toast');
+                if (toast) {
+                    toast.style.transform = 'translateX(500px)';
+                    toast.style.opacity = '0';
+                    setTimeout(() => toast.remove(), 300);
+                }
+            }, 5000);
+        </script>
         @endif
 
         <!-- Filter Section -->

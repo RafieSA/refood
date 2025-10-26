@@ -307,10 +307,13 @@
     <!-- Customer Reviews Section -->
     <div class="w-full py-8">
         <div class="bg-white shadow-sm px-4 md:px-8 py-6 md:py-8">
-            <div class="flex items-center justify-between mb-6">
-                <h2 class="text-2xl font-semibold text-gray-800">Customer Reviews</h2>
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+                <div>
+                    <h2 class="text-2xl font-semibold text-gray-800">Customer Reviews</h2>
+                    <p class="text-gray-500 text-sm mt-1">{{ $totalReviews }} {{ $totalReviews == 1 ? 'Review' : 'Reviews' }}</p>
+                </div>
                 <button
-                    class="bg-green-50 text-green-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-100 transition"
+                    class="bg-green-50 text-green-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-100 transition whitespace-nowrap"
                     onclick="document.getElementById('review-modal').classList.remove('hidden')"
                     type="button"
                 >
@@ -338,9 +341,16 @@
                     <p class="text-gray-700 text-sm">{{ $coment->coments }}</p>
                 </div>
                 @empty
-                <div class="col-span-2 text-center text-gray-400">Belum ada review.</div>
+                <div class="col-span-2 text-center text-gray-400 py-8">Belum ada review. Jadilah yang pertama memberikan review!</div>
                 @endforelse
             </div>
+            
+            <!-- Pagination Links -->
+            @if($coments->hasPages())
+            <div class="mt-6">
+                {{ $coments->links() }}
+            </div>
+            @endif
         </div>
     </div>
 
@@ -350,7 +360,7 @@
         <button class="absolute top-2 right-2 text-gray-400 hover:text-gray-600 text-2xl"
             onclick="document.getElementById('review-modal').classList.add('hidden')">&times;</button>
         <h2 class="text-xl font-semibold text-gray-800 mb-4">Write a Review</h2>
-        <form action="{{ route('coments.store') }}" method="POST">
+        <form action="{{ route('coments.store') }}" method="POST" id="review-form">
             @csrf
             <input type="hidden" name="restaurant_id" value="{{ is_array($restaurant) ? $restaurant['id'] : $restaurant->id }}">
             <div class="mb-4">
@@ -373,10 +383,67 @@
                 <label for="coments" class="block text-sm font-medium text-gray-700">Comments</label>
                 <textarea name="coments" id="coments" rows="3" class="mt-1 block w-full border-gray-300 rounded-md" required></textarea>
             </div>
-            <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Submit</button>
+            <button type="submit" id="submit-review-btn" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex items-center justify-center w-full">
+                <span id="submit-text">Submit Review</span>
+                <svg id="loading-spinner" class="hidden animate-spin h-5 w-5 ml-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            </button>
         </form>
     </div>
 </div>
+
+<!-- Loading Overlay (Full Screen) -->
+<div id="loading-overlay" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+    <div class="bg-white rounded-lg p-6 flex flex-col items-center">
+        <svg class="animate-spin h-12 w-12 text-green-600 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <p class="text-gray-700 font-medium">Submitting your review...</p>
+    </div>
+</div>
+
+<!-- Success Toast Notification -->
+@if(session('success'))
+<div id="success-toast" class="fixed top-4 right-4 z-50 bg-white rounded-lg shadow-2xl overflow-hidden transform transition-all duration-300 max-w-md">
+    <div class="flex items-start p-4">
+        <div class="flex-shrink-0">
+            <svg class="h-6 w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+        </div>
+        <div class="ml-3 flex-1">
+            <p class="text-sm font-medium text-gray-900">Success!</p>
+            <p class="mt-1 text-sm text-gray-500">{{ session('success') }}</p>
+        </div>
+        <button onclick="document.getElementById('success-toast').remove()" class="ml-4 text-gray-400 hover:text-gray-500">
+            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+            </svg>
+        </button>
+    </div>
+    <div class="bg-green-500 h-1">
+        <div id="toast-progress" class="bg-green-600 h-1 transition-all duration-[5000ms] ease-linear" style="width: 0%"></div>
+    </div>
+</div>
+<script>
+    // Auto hide toast after 5 seconds
+    setTimeout(function() {
+        document.getElementById('toast-progress').style.width = '100%';
+    }, 10);
+    setTimeout(function() {
+        const toast = document.getElementById('success-toast');
+        if (toast) {
+            toast.style.transform = 'translateX(500px)';
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 300);
+        }
+    }, 5000);
+</script>
+@endif
+
 <script>
     // Interaktif bintang rating
     document.addEventListener('DOMContentLoaded', function () {
@@ -407,6 +474,26 @@
             });
         }
         highlightStars(0);
+        
+        // Loading spinner on form submit
+        const reviewForm = document.getElementById('review-form');
+        const submitBtn = document.getElementById('submit-review-btn');
+        const submitText = document.getElementById('submit-text');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        
+        if (reviewForm) {
+            reviewForm.addEventListener('submit', function(e) {
+                // Show loading spinner on button
+                submitText.textContent = 'Submitting...';
+                loadingSpinner.classList.remove('hidden');
+                submitBtn.disabled = true;
+                submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
+                
+                // Show full screen loading overlay
+                loadingOverlay.classList.remove('hidden');
+            });
+        }
     });
 </script>
 
