@@ -370,13 +370,13 @@
         const autocompleteResults = document.getElementById('autocompleteResults');
         
         // All restaurants data for autocomplete
-        const restaurants = @json($restaurants->map(function($r) {
+        const restaurants = {!! json_encode($restaurants->map(function($r) {
             return [
                 'food_name' => is_array($r) ? $r['food_name'] : $r->food_name,
                 'restaurant_name' => is_array($r) ? ($r['restaurant_name'] ?? '') : ($r->restaurant_name ?? ''),
                 'food_type' => is_array($r) ? ($r['food_type'] ?? '') : ($r->food_type ?? ''),
             ];
-        }));
+        })->toArray()) !!};
         
         searchInput.addEventListener('input', function() {
             const query = this.value.toLowerCase().trim();
