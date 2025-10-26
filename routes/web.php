@@ -12,7 +12,9 @@ use App\Http\Controllers\Admin\VoucherClaimController;
 
 // Frontend routes (User) yang bisa diakses tanpa login
 Route::get('/', [RestaurantController::class, 'index'])->name('frontend.home');
-Route::get('/restaurants', [RestaurantController::class, 'index'])->name('frontend.restaurants.index');
+
+// Redirect /restaurants to / to avoid duplicate content (SEO optimization)
+Route::redirect('/restaurants', '/', 301)->name('frontend.restaurants.index');
 Route::get('/restaurants/{id}', [RestaurantController::class, 'show'])->name('frontend.restaurants.show');
 Route::get('/restaurants/{id}/claim', [RestaurantController::class, 'showClaimForm'])->name('frontend.restaurants.claim');
 Route::post('/restaurants/{id}/claim', [RestaurantController::class, 'submitClaimForm'])->name('frontend.restaurants.claim.submit');
