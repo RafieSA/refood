@@ -439,42 +439,42 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                 </div>
-                <h2 id="welcome-title" class="text-3xl font-bold text-gray-800 mb-2">Welcome to ReFood!</h2>
-                <p class="text-gray-600 text-lg">Your platform to reduce food waste and save money</p>
+                <h2 id="welcome-title" class="text-3xl font-bold text-gray-800 mb-2">Selamat Datang di ReFood!</h2>
+                <p class="text-gray-600 text-lg">Platform Anda untuk mengurangi limbah makanan dan hemat biaya</p>
             </div>
             
             <div class="space-y-4 mb-8">
                 <div class="flex items-start">
                     <div class="flex-shrink-0 w-10 h-10 bg-green-600 text-white rounded-full flex items-center justify-center font-bold mr-4">1</div>
                     <div>
-                        <h3 class="font-semibold text-gray-800 mb-1">Browse Restaurants</h3>
-                        <p class="text-gray-600 text-sm">Discover restaurants offering time-limited discounts on delicious meals</p>
+                        <h3 class="font-semibold text-gray-800 mb-1">Jelajahi Restoran</h3>
+                        <p class="text-gray-600 text-sm">Temukan restoran dengan diskon terbatas untuk makanan lezat</p>
                     </div>
                 </div>
                 
                 <div class="flex items-start">
                     <div class="flex-shrink-0 w-10 h-10 bg-green-600 text-white rounded-full flex items-center justify-center font-bold mr-4">2</div>
                     <div>
-                        <h3 class="font-semibold text-gray-800 mb-1">Claim Discounts</h3>
-                        <p class="text-gray-600 text-sm">Click "Claim Discount" to get your promotional code and show it at the restaurant</p>
+                        <h3 class="font-semibold text-gray-800 mb-1">Klaim Diskon</h3>
+                        <p class="text-gray-600 text-sm">Klik "Klaim Diskon" untuk mendapatkan kode promo dan tunjukkan di restoran</p>
                     </div>
                 </div>
                 
                 <div class="flex items-start">
                     <div class="flex-shrink-0 w-10 h-10 bg-green-600 text-white rounded-full flex items-center justify-center font-bold mr-4">3</div>
                     <div>
-                        <h3 class="font-semibold text-gray-800 mb-1">Leave a Review</h3>
-                        <p class="text-gray-600 text-sm">Share your experience and help others make great choices</p>
+                        <h3 class="font-semibold text-gray-800 mb-1">Berikan Ulasan</h3>
+                        <p class="text-gray-600 text-sm">Bagikan pengalaman Anda dan bantu orang lain membuat pilihan terbaik</p>
                     </div>
                 </div>
             </div>
             
             <div class="flex gap-4">
-                <button data-start-tour class="flex-1 bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition" aria-label="Start interactive tour">
-                    Take a Tour
+                <button data-start-tour class="flex-1 bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition" aria-label="Mulai tur interaktif">
+                    Ikuti Tur
                 </button>
-                <button data-close-welcome class="flex-1 bg-gray-200 text-gray-800 px-6 py-3 rounded-lg font-semibold hover:bg-gray-300 transition" aria-label="Close welcome modal">
-                    Get Started
+                <button data-close-welcome class="flex-1 bg-gray-200 text-gray-800 px-6 py-3 rounded-lg font-semibold hover:bg-gray-300 transition" aria-label="Tutup modal selamat datang">
+                    Mulai Sekarang
                 </button>
             </div>
         </div>
@@ -482,48 +482,48 @@
 
     <!-- Accessibility Panel -->
     <div id="accessibility-panel" class="accessibility-panel" role="region" aria-label="Accessibility settings">
-        <h3 class="text-xl font-bold text-gray-800 mb-4">Accessibility Settings</h3>
+        <h3 class="text-xl font-bold text-gray-800 mb-4">Pengaturan Aksesibilitas</h3>
         
         <!-- High Contrast -->
         <div class="mb-6">
             <label class="flex items-center justify-between cursor-pointer">
-                <span class="font-medium text-gray-700">High Contrast Mode</span>
-                <button id="contrast-toggle" class="w-14 h-8 bg-gray-300 rounded-full relative transition" aria-pressed="false" aria-label="Toggle high contrast mode">
+                <span class="font-medium text-gray-700">Mode Kontras Tinggi</span>
+                <button id="contrast-toggle" class="w-14 h-8 bg-gray-300 rounded-full relative transition" aria-pressed="false" aria-label="Aktifkan mode kontras tinggi">
                     <span class="absolute left-1 top-1 w-6 h-6 bg-white rounded-full transition-transform"></span>
                 </button>
             </label>
-            <p class="text-sm text-gray-500 mt-1">Improves visibility with higher color contrast</p>
+            <p class="text-sm text-gray-500 mt-1">Meningkatkan visibilitas dengan kontras warna lebih tinggi</p>
         </div>
         
         <!-- Font Size -->
         <div class="mb-6">
-            <label class="font-medium text-gray-700 block mb-2">Font Size</label>
+            <label class="font-medium text-gray-700 block mb-2">Ukuran Font</label>
             <div class="flex gap-2">
-                <button data-font-size="small" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm" aria-label="Small font size">A</button>
-                <button data-font-size="medium" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 active bg-green-600 text-white" aria-label="Medium font size (default)">A</button>
-                <button data-font-size="large" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-lg" aria-label="Large font size">A</button>
-                <button data-font-size="xlarge" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-xl" aria-label="Extra large font size">A</button>
+                <button data-font-size="small" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm" aria-label="Ukuran font kecil">A</button>
+                <button data-font-size="medium" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 active bg-green-600 text-white" aria-label="Ukuran font sedang (default)">A</button>
+                <button data-font-size="large" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-lg" aria-label="Ukuran font besar">A</button>
+                <button data-font-size="xlarge" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-xl" aria-label="Ukuran font sangat besar">A</button>
             </div>
         </div>
         
         <!-- Keyboard Shortcuts -->
         <div class="mb-6">
-            <h4 class="font-medium text-gray-700 mb-2">Keyboard Shortcuts</h4>
+            <h4 class="font-medium text-gray-700 mb-2">Pintasan Keyboard</h4>
             <div class="text-sm text-gray-600 space-y-1">
-                <div><kbd class="px-2 py-1 bg-gray-100 rounded">Alt</kbd> + <kbd class="px-2 py-1 bg-gray-100 rounded">A</kbd> - Open accessibility</div>
-                <div><kbd class="px-2 py-1 bg-gray-100 rounded">Alt</kbd> + <kbd class="px-2 py-1 bg-gray-100 rounded">H</kbd> - Help/Tour</div>
-                <div><kbd class="px-2 py-1 bg-gray-100 rounded">ESC</kbd> - Close modals</div>
-                <div><kbd class="px-2 py-1 bg-gray-100 rounded">Tab</kbd> - Navigate elements</div>
+                <div><kbd class="px-2 py-1 bg-gray-100 rounded">Alt</kbd> + <kbd class="px-2 py-1 bg-gray-100 rounded">A</kbd> - Buka aksesibilitas</div>
+                <div><kbd class="px-2 py-1 bg-gray-100 rounded">Alt</kbd> + <kbd class="px-2 py-1 bg-gray-100 rounded">H</kbd> - Bantuan/Tur</div>
+                <div><kbd class="px-2 py-1 bg-gray-100 rounded">ESC</kbd> - Tutup jendela</div>
+                <div><kbd class="px-2 py-1 bg-gray-100 rounded">Tab</kbd> - Navigasi elemen</div>
             </div>
         </div>
         
-        <button onclick="accessibility.closeAllModals()" class="w-full bg-gray-200 text-gray-800 px-4 py-2 rounded-lg font-medium hover:bg-gray-300" aria-label="Close settings panel">
-            Close
+        <button onclick="accessibility.closeAllModals()" class="w-full bg-gray-200 text-gray-800 px-4 py-2 rounded-lg font-medium hover:bg-gray-300" aria-label="Tutup panel pengaturan">
+            Tutup
         </button>
     </div>
 
     <!-- Accessibility Toggle Button -->
-    <button class="accessibility-toggle" onclick="accessibility.toggleAccessibilityPanel()" aria-label="Open accessibility settings" aria-expanded="false">
+    <button class="accessibility-toggle" onclick="accessibility.toggleAccessibilityPanel()" aria-label="Buka pengaturan aksesibilitas" aria-expanded="false">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
         </svg>

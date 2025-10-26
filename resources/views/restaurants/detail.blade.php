@@ -317,22 +317,22 @@
         <div class="bg-white shadow-sm px-4 md:px-8 py-6 md:py-8">
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
                 <div>
-                    <h2 class="text-2xl font-semibold text-gray-800">Customer Reviews</h2>
-                    <p class="text-gray-500 text-sm mt-1">{{ $totalReviews }} {{ $totalReviews == 1 ? 'Review' : 'Reviews' }}</p>
+                    <h2 class="text-2xl font-semibold text-gray-800">Ulasan Pelanggan</h2>
+                    <p class="text-gray-500 text-sm mt-1">{{ $totalReviews }} {{ $totalReviews == 1 ? 'Ulasan' : 'Ulasan' }}</p>
                 </div>
                 <div class="flex gap-2 w-full sm:w-auto">
                     <select onchange="window.location.href='?sort=' + this.value" class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
-                        <option value="newest" {{ $sort == 'newest' ? 'selected' : '' }}>Newest First</option>
-                        <option value="oldest" {{ $sort == 'oldest' ? 'selected' : '' }}>Oldest First</option>
-                        <option value="highest" {{ $sort == 'highest' ? 'selected' : '' }}>Highest Rated</option>
-                        <option value="lowest" {{ $sort == 'lowest' ? 'selected' : '' }}>Lowest Rated</option>
+                        <option value="newest" {{ $sort == 'newest' ? 'selected' : '' }}>Terbaru</option>
+                        <option value="oldest" {{ $sort == 'oldest' ? 'selected' : '' }}>Terlama</option>
+                        <option value="highest" {{ $sort == 'highest' ? 'selected' : '' }}>Rating Tertinggi</option>
+                        <option value="lowest" {{ $sort == 'lowest' ? 'selected' : '' }}>Rating Terendah</option>
                     </select>
                     <button
                         class="bg-green-50 text-green-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-100 transition whitespace-nowrap"
                         onclick="document.getElementById('review-modal').classList.remove('hidden')"
                         type="button"
                     >
-                        Write a Review
+                        Tulis Ulasan
                     </button>
                 </div>
             </div>
@@ -375,12 +375,12 @@
     <div class="bg-white rounded-xl shadow-lg w-full max-w-md p-8 relative">
         <button class="absolute top-2 right-2 text-gray-400 hover:text-gray-600 text-2xl"
             onclick="document.getElementById('review-modal').classList.add('hidden')">&times;</button>
-        <h2 class="text-xl font-semibold text-gray-800 mb-4">Write a Review</h2>
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Tulis Ulasan</h2>
         <form action="{{ route('coments.store') }}" method="POST" id="review-form">
             @csrf
             <input type="hidden" name="restaurant_id" value="{{ is_array($restaurant) ? $restaurant['id'] : $restaurant->id }}">
             <div class="mb-4">
-                <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+                <label for="name" class="block text-sm font-medium text-gray-700">Nama</label>
                 <input type="text" name="name" id="name" class="mt-1 block w-full border-gray-300 rounded-md" required>
             </div>
             <div class="mb-4">
@@ -396,11 +396,11 @@
                 </div>
             </div>
             <div class="mb-4">
-                <label for="coments" class="block text-sm font-medium text-gray-700">Comments</label>
+                <label for="coments" class="block text-sm font-medium text-gray-700">Komentar</label>
                 <textarea name="coments" id="coments" rows="3" class="mt-1 block w-full border-gray-300 rounded-md" required></textarea>
             </div>
             <button type="submit" id="submit-review-btn" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex items-center justify-center w-full">
-                <span id="submit-text">Submit Review</span>
+                <span id="submit-text">Kirim Ulasan</span>
                 <svg id="loading-spinner" class="hidden animate-spin h-5 w-5 ml-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -417,7 +417,7 @@
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
         </svg>
-        <p class="text-gray-700 font-medium">Submitting your review...</p>
+        <p class="text-gray-700 font-medium">Mengirim ulasan Anda...</p>
     </div>
 </div>
 
@@ -431,7 +431,7 @@
             </svg>
         </div>
         <div class="ml-3 flex-1">
-            <p class="text-sm font-medium text-gray-900">Success!</p>
+            <p class="text-sm font-medium text-gray-900">Berhasil!</p>
             <p class="mt-1 text-sm text-gray-500">{{ session('success') }}</p>
         </div>
         <button onclick="document.getElementById('success-toast').remove()" class="ml-4 text-gray-400 hover:text-gray-500">
@@ -501,7 +501,7 @@
         if (reviewForm) {
             reviewForm.addEventListener('submit', function(e) {
                 // Show loading spinner on button
-                submitText.textContent = 'Submitting...';
+                submitText.textContent = 'Mengirim...';
                 loadingSpinner.classList.remove('hidden');
                 submitBtn.disabled = true;
                 submitBtn.classList.add('opacity-75', 'cursor-not-allowed');

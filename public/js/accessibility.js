@@ -170,7 +170,7 @@ class RefoodAccessibility {
                 document.body.classList.toggle('high-contrast');
                 const isActive = document.body.classList.contains('high-contrast');
                 this.savePreference('high_contrast', isActive);
-                this.announce(`High contrast mode ${isActive ? 'enabled' : 'disabled'}`);
+                this.announce(`Mode kontras tinggi ${isActive ? 'diaktifkan' : 'dinonaktifkan'}`);
             });
         }
 
@@ -182,7 +182,7 @@ class RefoodAccessibility {
                 document.body.className = document.body.className.replace(/font-\w+/g, '');
                 document.body.classList.add(`font-${size}`);
                 this.savePreference('font_size', size);
-                this.announce(`Font size changed to ${size}`);
+                this.announce(`Ukuran font diubah ke ${size}`);
                 
                 // Update active state
                 fontButtons.forEach(b => b.classList.remove('active', 'bg-green-600', 'text-white'));
@@ -238,7 +238,7 @@ class RefoodAccessibility {
             document.body.style.overflow = 'hidden';
             const firstButton = modal.querySelector('button');
             if (firstButton) firstButton.focus();
-            this.announce('Welcome to ReFood! Modal opened.');
+            this.announce('Selamat datang di ReFood! Modal dibuka.');
         }
     }
 
@@ -247,7 +247,7 @@ class RefoodAccessibility {
         if (modal) {
             modal.classList.add('hidden');
             document.body.style.overflow = 'auto';
-            this.announce('Welcome modal closed');
+            this.announce('Modal selamat datang ditutup');
         }
     }
 
@@ -259,20 +259,20 @@ class RefoodAccessibility {
         this.tourSteps = [
             {
                 element: '[data-tour="search"]',
-                title: 'Search Restaurants',
-                description: 'Type to search restaurants by name, menu, or cuisine type. Autocomplete will show suggestions!',
+                title: 'Pencarian Restoran',
+                description: 'Ketik untuk mencari restoran berdasarkan nama, menu, atau jenis masakan. Autocomplete akan menampilkan saran!',
                 position: 'bottom'
             },
             {
                 element: '[data-tour="filters"]',
-                title: 'Filter Options',
-                description: 'Use filters to find restaurants by cuisine type and discount percentage.',
+                title: 'Opsi Filter',
+                description: 'Gunakan filter untuk mencari restoran berdasarkan jenis masakan dan persentase diskon.',
                 position: 'bottom'
             },
             {
                 element: '[data-tour="restaurant-card"]',
-                title: 'Restaurant Cards',
-                description: 'Click any restaurant card to see full details, menu, reviews, and claim discounts!',
+                title: 'Kartu Restoran',
+                description: 'Klik kartu restoran untuk melihat detail lengkap, menu, ulasan, dan klaim diskon!',
                 position: 'top'
             }
         ];
@@ -282,14 +282,14 @@ class RefoodAccessibility {
             this.tourSteps.push(
                 {
                     element: '[data-tour="reviews"]',
-                    title: 'Customer Reviews',
-                    description: 'Read reviews from other customers and add your own after claiming a discount.',
+                    title: 'Ulasan Pelanggan',
+                    description: 'Baca ulasan dari pelanggan lain dan tambahkan ulasan Anda setelah klaim diskon.',
                     position: 'top'
                 },
                 {
                     element: '[data-tour="claim"]',
-                    title: 'Claim Discount',
-                    description: 'Click "Claim Discount" to get the promotional code. Show it at the restaurant!',
+                    title: 'Klaim Diskon',
+                    description: 'Klik "Klaim Diskon" untuk mendapatkan kode promo. Tunjukkan kode tersebut di restoran!',
                     position: 'top'
                 }
             );
@@ -344,11 +344,11 @@ class RefoodAccessibility {
             <h3 id="tour-title" class="text-xl font-bold text-gray-800 mb-2">${step.title}</h3>
             <p id="tour-description" class="text-gray-600 mb-4">${step.description}</p>
             <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-500">Step ${this.currentTourStep + 1} of ${this.tourSteps.length}</span>
+                <span class="text-sm text-gray-500">Langkah ${this.currentTourStep + 1} dari ${this.tourSteps.length}</span>
                 <div class="space-x-2">
-                    <button onclick="accessibility.endTour()" class="px-4 py-2 text-gray-600 hover:text-gray-800">Skip Tour</button>
+                    <button onclick="accessibility.endTour()" class="px-4 py-2 text-gray-600 hover:text-gray-800">Lewati Tur</button>
                     <button onclick="accessibility.nextTourStep()" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-                        ${this.currentTourStep === this.tourSteps.length - 1 ? 'Finish' : 'Next'}
+                        ${this.currentTourStep === this.tourSteps.length - 1 ? 'Selesai' : 'Berikutnya'}
                     </button>
                 </div>
             </div>
@@ -366,7 +366,7 @@ class RefoodAccessibility {
             tooltip.style.left = Math.max(20, rect.left - 100) + 'px';
         }
 
-        this.announce(`Tour step ${this.currentTourStep + 1}: ${step.title}`);
+        this.announce(`Langkah tur ${this.currentTourStep + 1}: ${step.title}`);
     }
 
     nextTourStep() {
@@ -381,7 +381,7 @@ class RefoodAccessibility {
             el.style.zIndex = '';
             el.style.position = '';
         });
-        this.announce('Feature tour ended');
+        this.announce('Tur fitur selesai');
     }
 
     // ==================== MOBILE FEATURES ====================
@@ -400,32 +400,32 @@ class RefoodAccessibility {
     createBottomNav() {
         const nav = document.createElement('nav');
         nav.className = 'mobile-bottom-nav';
-        nav.setAttribute('aria-label', 'Mobile navigation');
+        nav.setAttribute('aria-label', 'Navigasi mobile');
         nav.innerHTML = `
             <div class="flex justify-around items-center">
-                <a href="${window.location.origin}" class="flex flex-col items-center p-2 text-gray-600 hover:text-green-600" aria-label="Home">
+                <a href="${window.location.origin}" class="flex flex-col items-center p-2 text-gray-600 hover:text-green-600" aria-label="Beranda">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                     </svg>
-                    <span class="text-xs mt-1">Home</span>
+                    <span class="text-xs mt-1">Beranda</span>
                 </a>
-                <a href="${window.location.origin}/restaurants" class="flex flex-col items-center p-2 text-green-600 hover:text-green-600" aria-label="Restaurants">
+                <a href="${window.location.origin}/restaurants" class="flex flex-col items-center p-2 text-green-600 hover:text-green-600" aria-label="Jelajahi restoran">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
                     </svg>
-                    <span class="text-xs mt-1">Browse</span>
+                    <span class="text-xs mt-1">Jelajah</span>
                 </a>
-                <button onclick="accessibility.toggleAccessibilityPanel()" class="flex flex-col items-center p-2 text-gray-600 hover:text-green-600" aria-label="Accessibility settings">
+                <button onclick="accessibility.toggleAccessibilityPanel()" class="flex flex-col items-center p-2 text-gray-600 hover:text-green-600" aria-label="Pengaturan aksesibilitas">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
                     </svg>
-                    <span class="text-xs mt-1">Settings</span>
+                    <span class="text-xs mt-1">Pengaturan</span>
                 </button>
-                <button onclick="accessibility.startFeatureTour()" class="flex flex-col items-center p-2 text-gray-600 hover:text-green-600" aria-label="Help and tour">
+                <button onclick="accessibility.startFeatureTour()" class="flex flex-col items-center p-2 text-gray-600 hover:text-green-600" aria-label="Bantuan dan tur">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
-                    <span class="text-xs mt-1">Help</span>
+                    <span class="text-xs mt-1">Bantuan</span>
                 </button>
             </div>
         `;
@@ -542,7 +542,7 @@ class RefoodAccessibility {
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                <span class="ml-2 text-sm text-gray-700">Pull to refresh</span>
+                <span class="ml-2 text-sm text-gray-700">Tarik untuk muat ulang</span>
             `;
             document.body.appendChild(indicator);
         }
@@ -562,10 +562,10 @@ class RefoodAccessibility {
     triggerRefresh() {
         const indicator = document.querySelector('.ptr-indicator');
         if (indicator) {
-            indicator.innerHTML = '<svg class="animate-spin h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span class="ml-2 text-sm text-gray-700">Refreshing...</span>';
+            indicator.innerHTML = '<svg class="animate-spin h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span class="ml-2 text-sm text-gray-700">Memuat ulang...</span>';
         }
 
-        this.announce('Refreshing page');
+        this.announce('Memuat ulang halaman');
         
         setTimeout(() => {
             window.location.reload();
