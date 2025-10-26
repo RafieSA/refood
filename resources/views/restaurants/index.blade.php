@@ -6,13 +6,14 @@
     <title>ReFood - All Discounts is Here!</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/accessibility.css') }}">
     <style>
         body {
             font-family: 'Inter', sans-serif;
         }
     </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-50 font-medium" id="main-content">
     <!-- Navbar -->
     <nav class="bg-white shadow-md fixed w-full top-0 z-50">
         <div class="container mx-auto px-4">
@@ -25,10 +26,11 @@
                 </div>
                 <div class="flex items-center space-x-4">
                     <!-- Search Form in Navbar with Autocomplete -->
-                    <form action="{{ route('frontend.restaurants.index') }}" method="GET" class="flex items-center relative">
+                    <form action="{{ route('frontend.restaurants.index') }}" method="GET" class="flex items-center relative" data-tour="search">
                         <div class="relative">
                             <input type="text" id="searchInput" name="search" value="{{ request('search') }}" 
                                    placeholder="Cari restoran/menu..." autocomplete="off"
+                                   aria-label="Search restaurants, menus, or cuisine types"
                                    class="border border-gray-300 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 w-64">
                             <div id="autocompleteResults" class="hidden absolute z-50 w-full bg-white border border-gray-200 rounded-lg shadow-lg mt-1 max-h-60 overflow-y-auto">
                                 <!-- Autocomplete results will appear here -->
@@ -99,11 +101,11 @@
         @endif
 
         <!-- Filter Section -->
-        <div class="bg-white rounded-lg shadow-md p-4 mb-8">
+        <div class="bg-white rounded-lg shadow-md p-4 mb-8" data-tour="filters">
             <div class="flex flex-wrap gap-4 justify-between items-center">
                 <form action="{{ route('frontend.restaurants.index') }}" method="GET" class="flex space-x-4">
                     <input type="hidden" name="search" value="{{ request('search') }}">
-                    <select name="category" onchange="this.form.submit()" class="border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500">
+                    <select name="category" onchange="this.form.submit()" class="border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500" aria-label="Filter by cuisine type">
                         <option value="">All Cuisines</option>
                         @foreach($categories as $cat)
                             <option value="{{ $cat }}" {{ request('category') == $cat ? 'selected' : '' }}>
@@ -111,7 +113,7 @@
                             </option>
                         @endforeach
                     </select>
-                    <select name="discount" onchange="this.form.submit()" class="border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500">
+                    <select name="discount" onchange="this.form.submit()" class="border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500" aria-label="Filter by discount percentage">
                         <option value="">All Discounts</option>
                         <option value="10" {{ request('discount') == '10' ? 'selected' : '' }}>10% and above</option>
                         <option value="20" {{ request('discount') == '20' ? 'selected' : '' }}>20% and above</option>
@@ -177,9 +179,9 @@
                 <p class="text-gray-500">Check back later for new deals!</p>
             </div>
         @else
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12" id="restaurant-list">
                 @foreach($restaurants as $restaurant)
-                    <a href="{{ route('frontend.restaurants.show', $restaurant->id) }}" class="block bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 group">
+                    <a href="{{ route('frontend.restaurants.show', $restaurant->id) }}" class="restaurant-card block bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 group" data-tour="restaurant-card" role="article" aria-label="Restaurant: {{ $restaurant->admin->Restaurant_Name ?? 'N/A' }}, {{ $restaurant->discount_percentage }}% discount">
                         <!-- Image Container -->
                         <div class="relative h-48 overflow-hidden">
                             <img src="{{ $restaurant->photo_url }}" alt="{{ $restaurant->name }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
@@ -427,5 +429,108 @@
             }
         });
     </script>
+
+    <!-- Welcome Modal -->
+    <div id="welcome-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[9999] flex items-center justify-center p-4 modal" role="dialog" aria-labelledby="welcome-title" aria-modal="true">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-8 transform transition-all">
+            <div class="text-center mb-6">
+                <div class="inline-block p-4 bg-green-100 rounded-full mb-4">
+                    <svg class="w-16 h-16 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <h2 id="welcome-title" class="text-3xl font-bold text-gray-800 mb-2">Welcome to ReFood!</h2>
+                <p class="text-gray-600 text-lg">Your platform to reduce food waste and save money</p>
+            </div>
+            
+            <div class="space-y-4 mb-8">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 w-10 h-10 bg-green-600 text-white rounded-full flex items-center justify-center font-bold mr-4">1</div>
+                    <div>
+                        <h3 class="font-semibold text-gray-800 mb-1">Browse Restaurants</h3>
+                        <p class="text-gray-600 text-sm">Discover restaurants offering time-limited discounts on delicious meals</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 w-10 h-10 bg-green-600 text-white rounded-full flex items-center justify-center font-bold mr-4">2</div>
+                    <div>
+                        <h3 class="font-semibold text-gray-800 mb-1">Claim Discounts</h3>
+                        <p class="text-gray-600 text-sm">Click "Claim Discount" to get your promotional code and show it at the restaurant</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 w-10 h-10 bg-green-600 text-white rounded-full flex items-center justify-center font-bold mr-4">3</div>
+                    <div>
+                        <h3 class="font-semibold text-gray-800 mb-1">Leave a Review</h3>
+                        <p class="text-gray-600 text-sm">Share your experience and help others make great choices</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex gap-4">
+                <button data-start-tour class="flex-1 bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition" aria-label="Start interactive tour">
+                    Take a Tour
+                </button>
+                <button data-close-welcome class="flex-1 bg-gray-200 text-gray-800 px-6 py-3 rounded-lg font-semibold hover:bg-gray-300 transition" aria-label="Close welcome modal">
+                    Get Started
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Accessibility Panel -->
+    <div id="accessibility-panel" class="accessibility-panel" role="region" aria-label="Accessibility settings">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">Accessibility Settings</h3>
+        
+        <!-- High Contrast -->
+        <div class="mb-6">
+            <label class="flex items-center justify-between cursor-pointer">
+                <span class="font-medium text-gray-700">High Contrast Mode</span>
+                <button id="contrast-toggle" class="w-14 h-8 bg-gray-300 rounded-full relative transition" aria-pressed="false" aria-label="Toggle high contrast mode">
+                    <span class="absolute left-1 top-1 w-6 h-6 bg-white rounded-full transition-transform"></span>
+                </button>
+            </label>
+            <p class="text-sm text-gray-500 mt-1">Improves visibility with higher color contrast</p>
+        </div>
+        
+        <!-- Font Size -->
+        <div class="mb-6">
+            <label class="font-medium text-gray-700 block mb-2">Font Size</label>
+            <div class="flex gap-2">
+                <button data-font-size="small" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm" aria-label="Small font size">A</button>
+                <button data-font-size="medium" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 active bg-green-600 text-white" aria-label="Medium font size (default)">A</button>
+                <button data-font-size="large" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-lg" aria-label="Large font size">A</button>
+                <button data-font-size="xlarge" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-xl" aria-label="Extra large font size">A</button>
+            </div>
+        </div>
+        
+        <!-- Keyboard Shortcuts -->
+        <div class="mb-6">
+            <h4 class="font-medium text-gray-700 mb-2">Keyboard Shortcuts</h4>
+            <div class="text-sm text-gray-600 space-y-1">
+                <div><kbd class="px-2 py-1 bg-gray-100 rounded">Alt</kbd> + <kbd class="px-2 py-1 bg-gray-100 rounded">A</kbd> - Open accessibility</div>
+                <div><kbd class="px-2 py-1 bg-gray-100 rounded">Alt</kbd> + <kbd class="px-2 py-1 bg-gray-100 rounded">H</kbd> - Help/Tour</div>
+                <div><kbd class="px-2 py-1 bg-gray-100 rounded">ESC</kbd> - Close modals</div>
+                <div><kbd class="px-2 py-1 bg-gray-100 rounded">Tab</kbd> - Navigate elements</div>
+            </div>
+        </div>
+        
+        <button onclick="accessibility.closeAllModals()" class="w-full bg-gray-200 text-gray-800 px-4 py-2 rounded-lg font-medium hover:bg-gray-300" aria-label="Close settings panel">
+            Close
+        </button>
+    </div>
+
+    <!-- Accessibility Toggle Button -->
+    <button class="accessibility-toggle" onclick="accessibility.toggleAccessibilityPanel()" aria-label="Open accessibility settings" aria-expanded="false">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+        </svg>
+        <span class="sr-only">Accessibility Settings</span>
+    </button>
+
+    <!-- Load Accessibility Script -->
+    <script src="{{ asset('js/accessibility.js') }}"></script>
 </body>
 </html>
