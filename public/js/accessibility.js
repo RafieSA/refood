@@ -253,6 +253,9 @@ class RefoodAccessibility {
 
     // ==================== FEATURE TOUR ====================
     initFeatureTour() {
+        // Dynamic tour steps based on current page
+        const isDetailPage = window.location.pathname.includes('/restaurants/');
+        
         this.tourSteps = [
             {
                 element: '[data-tour="search"]',
@@ -271,20 +274,26 @@ class RefoodAccessibility {
                 title: 'Restaurant Cards',
                 description: 'Click any restaurant card to see full details, menu, reviews, and claim discounts!',
                 position: 'top'
-            },
-            {
-                element: '[data-tour="reviews"]',
-                title: 'Customer Reviews',
-                description: 'Read reviews from other customers and add your own after claiming a discount.',
-                position: 'top'
-            },
-            {
-                element: '[data-tour="claim"]',
-                title: 'Claim Discount',
-                description: 'Click "Claim Discount" to get the promotional code. Show it at the restaurant!',
-                position: 'top'
             }
         ];
+
+        // Add detail page steps if on detail page
+        if (isDetailPage) {
+            this.tourSteps.push(
+                {
+                    element: '[data-tour="reviews"]',
+                    title: 'Customer Reviews',
+                    description: 'Read reviews from other customers and add your own after claiming a discount.',
+                    position: 'top'
+                },
+                {
+                    element: '[data-tour="claim"]',
+                    title: 'Claim Discount',
+                    description: 'Click "Claim Discount" to get the promotional code. Show it at the restaurant!',
+                    position: 'top'
+                }
+            );
+        }
 
         this.currentTourStep = 0;
     }
