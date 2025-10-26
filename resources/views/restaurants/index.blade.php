@@ -96,20 +96,23 @@
         <!-- Filter Section -->
         <div class="bg-white rounded-lg shadow-md p-4 mb-8">
             <div class="flex flex-wrap gap-4 justify-between items-center">
-                <div class="flex space-x-4">
-                    <select class="border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500">
+                <form action="{{ route('frontend.restaurants.index') }}" method="GET" class="flex space-x-4">
+                    <input type="hidden" name="search" value="{{ request('search') }}">
+                    <select name="category" onchange="this.form.submit()" class="border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500">
                         <option value="">All Cuisines</option>
-                        <option value="indonesian">Indonesian</option>
-                        <option value="western">Western</option>
-                        <option value="asian">Asian</option>
+                        @foreach($categories as $cat)
+                            <option value="{{ $cat }}" {{ request('category') == $cat ? 'selected' : '' }}>
+                                {{ ucfirst($cat) }}
+                            </option>
+                        @endforeach
                     </select>
-                    <select class="border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500">
+                    <select name="discount" onchange="this.form.submit()" class="border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500">
                         <option value="">All Discounts</option>
-                        <option value="10">10% and above</option>
-                        <option value="20">20% and above</option>
-                        <option value="30">30% and above</option>
+                        <option value="10" {{ request('discount') == '10' ? 'selected' : '' }}>10% and above</option>
+                        <option value="20" {{ request('discount') == '20' ? 'selected' : '' }}>20% and above</option>
+                        <option value="30" {{ request('discount') == '30' ? 'selected' : '' }}>30% and above</option>
                     </select>
-                </div>
+                </form>
                 <div class="text-gray-600">
                     @if($restaurants->isEmpty())
                         <span>No restaurants available</span>
@@ -122,34 +125,31 @@
 
         <!-- Kategori Carousel -->
         @php
-            $categoryList = [
-                [
-                    'key' => 'indonesian',
-                    'label' => 'Indonesian',
-                    'icon' => '<span class="text-2xl mr-3">🍚</span>',
-                ],
-                [
-                    'key' => 'western',
-                    'label' => 'Western',
-                    'icon' => '<span class="text-2xl mr-3">🍔</span>',
-                ],
-                [
-                    'key' => 'asian',
-                    'label' => 'Asian',
-                    'icon' => '<span class="text-2xl mr-3">🍣</span>',
-                ],
+            $categoryIcons = [
+                'indonesian' => '🍚',
+                'western' => '🍔',
+                'asian' => '🍣',
+                'japanese' => '🍱',
+                'chinese' => '🥟',
+                'italian' => '🍕',
+                'mexican' => '🌮',
+                'indian' => '🍛',
             ];
             $selectedCategory = strtolower(request('category', ''));
         @endphp
 
         <div class="container mx-auto px-4 mb-8">
             <div class="flex overflow-x-auto space-x-4 hide-scrollbar py-2">
-                @foreach($categoryList as $cat)
-                    <a href="?category={{ $cat['label'] }}"
+                @foreach($categories as $cat)
+                    @php
+                        $catLower = strtolower($cat);
+                        $icon = $categoryIcons[$catLower] ?? '🍽️';
+                    @endphp
+                    <a href="?category={{ $cat }}{{ request('search') ? '&search=' . request('search') : '' }}{{ request('discount') ? '&discount=' . request('discount') : '' }}"
                        class="flex items-center px-6 py-3 rounded-full shadow-md bg-white border transition
-                           {{ $selectedCategory === strtolower($cat['key']) ? 'border-green-600 bg-green-50 text-green-700 font-semibold' : 'border-gray-200 text-gray-700 hover:bg-green-50' }}">
-                        {!! $cat['icon'] !!}
-                        <span class="whitespace-nowrap">{{ $cat['label'] }}</span>
+                           {{ $selectedCategory === $catLower ? 'border-green-600 bg-green-50 text-green-700 font-semibold' : 'border-gray-200 text-gray-700 hover:bg-green-50' }}">
+                        <span class="text-2xl mr-3">{{ $icon }}</span>
+                        <span class="whitespace-nowrap">{{ ucfirst($cat) }}</span>
                     </a>
                 @endforeach
             </div>

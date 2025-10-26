@@ -15,6 +15,7 @@ class RestaurantController extends Controller
     {
         $search = $request->input('search');
         $category = $request->input('category');
+        $minDiscount = $request->input('discount');
 
         $restaurants = \App\Models\Restaurant::with('admin')
             ->when($category, function ($query, $category) {
@@ -26,11 +27,21 @@ class RestaurantController extends Controller
                 })
                 ->orWhere('food_name', 'ilike', "%{$search}%");
             })
+            ->when($minDiscount, function ($query, $minDiscount) {
+                $query->where('discount_percentage', '>=', $minDiscount);
+            })
             ->get();
 
-        $articles = Article::orderBy('uploaded_at', 'desc')->take(3)->get(); // Ambil 3 artikel terbaru
+        $articles = Article::orderBy('uploaded_at', 'desc')->take(3)->get();
+        
+        // Ambil categories dari database (distinct food_type)
+        $categories = \App\Models\Restaurant::select('food_type')
+            ->distinct()
+            ->whereNotNull('food_type')
+            ->orderBy('food_type')
+            ->pluck('food_type');
 
-        return view('restaurants.index', compact('restaurants', 'articles', 'category'));
+        return view('restaurants.index', compact('restaurants', 'articles', 'category', 'categories'));
     }
 
     public function show($id)
@@ -56,8 +67,6 @@ class RestaurantController extends Controller
                 abort(404, 'Restaurant not found');
             }
 
-            // Ambil semua komentar
-            
             // Ambil data admin (hanya jika data restoran ditemukan)
             $admin = null;
             if (is_object($restaurant) && isset($restaurant->admin_id)) {
@@ -68,8 +77,16 @@ class RestaurantController extends Controller
                 $admin = $restaurant->admin;
             }
             
-            $coments = \App\Models\Coment::orderBy('id', 'desc')->get();
-            return view('restaurants.detail', compact('restaurant', 'admin', 'coments'));
+            // Ambil comments HANYA untuk restaurant ini
+            $coments = \App\Models\Coment::where('restaurant_id', $id)
+                ->orderBy('created_at', 'desc')
+                ->get();
+            
+            // Hitung average rating dan total reviews
+            $averageRating = $coments->avg('rating') ?? 0;
+            $totalReviews = $coments->count();
+            
+            return view('restaurants.detail', compact('restaurant', 'admin', 'coments', 'averageRating', 'totalReviews'));
         } catch (\Exception $e) {
             Log::error('Error fetching restaurant', ['error' => $e->getMessage()]);
             abort(500, 'Server error while fetching restaurant details');

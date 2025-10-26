@@ -16,12 +16,19 @@ class ComentController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required',
+            'name' => 'required|string|max:255',
             'rating' => 'required|integer|min:1|max:5',
-            'coments' => 'required',
+            'coments' => 'required|string',
+            'restaurant_id' => 'required|uuid|exists:restaurants,id',
         ]);
 
-        \App\Models\Coment::create($request->all());
+        \App\Models\Coment::create([
+            'name' => $request->name,
+            'rating' => $request->rating,
+            'coments' => $request->coments,
+            'restaurant_id' => $request->restaurant_id,
+        ]);
+        
         return redirect()->back()->with('success', 'Komentar berhasil ditambahkan!');
     }
 }
