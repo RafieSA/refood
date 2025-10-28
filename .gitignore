@@ -21,3 +21,15 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+# Abaikan file .zip
+*.zip
+
+# Abaikan folder .qwen
+.qwen/
+
+# File Laravel/Sistem standar
+/node_modules
+/public/storage
+/storage/*.log
+/vendor
+.env
