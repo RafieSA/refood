@@ -1,7 +1,4 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
-name: Build and deploy PHP app to Azure Web App - refood
+name: Deploy to Azure Web App
 
 on:
   push:
@@ -10,61 +7,66 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read #This is required for actions/checkout
-
+    
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
-
-      - name: Check if composer.json exists
-        id: check_files
-        uses: andstor/file-existence-action@v1
-        with:
-          files: 'composer.json'
-
-      - name: Run composer install if composer.json exists
-        if: steps.check_files.outputs.files_exists == 'true'
-        run: composer validate --no-check-publish && composer install --prefer-dist --no-progress
-
-
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v4
-        with:
-          name: php-app
-          path: .
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
-
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v4
-        with:
-          name: php-app
+    - name: Checkout code
+      uses: actions/checkout@v4
       
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_ED31D358CAE6478FA69D9513C86AAE1D }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_02D64C4ADEFF4D1EA383B33B3771B542 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_2E07667CEC7F4E7B803A2AC4DE72BB6B }}
-
-      - name: 'Deploy to Azure Web App'
-        uses: azure/webapps-deploy@v3
-        id: deploy-to-webapp
-        with:
-          app-name: 'refood'
-          slot-name: 'Production'
-          package: .
-          
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_mysql, dom, filter, gd, iconv, json, mbstring, pdo
+        coverage: none
+        
+    - name: Copy .env
+      run: cp .env.example .env
+      
+    - name: Install Composer dependencies
+      run: composer install --no-dev --optimize-autoloader --no-interaction
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Install NPM dependencies
+      run: npm ci
+      
+    - name: Build assets
+      run: npm run build
+      
+    - name: Generate APP_KEY
+      run: php artisan key:generate --force
+      
+    - name: Set directory permissions
+      run: chmod -R 755 storage bootstrap/cache
+      
+    - name: Clear caches
+      run: |
+        php artisan config:clear
+        php artisan route:clear
+        php artisan view:clear
+        php artisan cache:clear
+        
+    - name: Optimize for production
+      run: |
+        php artisan config:cache
+        php artisan route:cache
+        php artisan view:cache
+        
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v3
+      with:
+        app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
+        slot-name: 'production'
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: .
+        
+    - name: Run migrations on Azure
+      run: |
+        curl -X POST "https://${{ secrets.AZURE_WEBAPP_NAME }}.azurewebsites.net/api/migrate" \
+          -H "Content-Type: application/json" \
+          -d '{"token": "${{ secrets.MIGRATION_TOKEN }}"}'
