@@ -1,0 +1,72 @@
+name: Deploy to Azure Web App
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_mysql, dom, filter, gd, iconv, json, mbstring, pdo
+        coverage: none
+        
+    - name: Copy .env
+      run: cp .env.example .env
+      
+    - name: Install Composer dependencies
+      run: composer install --no-dev --optimize-autoloader --no-interaction
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Install NPM dependencies
+      run: npm ci
+      
+    - name: Build assets
+      run: npm run build
+      
+    - name: Generate APP_KEY
+      run: php artisan key:generate --force
+      
+    - name: Set directory permissions
+      run: chmod -R 755 storage bootstrap/cache
+      
+    - name: Clear caches
+      run: |
+        php artisan config:clear
+        php artisan route:clear
+        php artisan view:clear
+        php artisan cache:clear
+        
+    - name: Optimize for production
+      run: |
+        php artisan config:cache
+        php artisan route:cache
+        php artisan view:cache
+        
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v3
+      with:
+        app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
+        slot-name: 'production'
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: .
+        
+    - name: Run migrations on Azure
+      run: |
+        curl -X POST "https://${{ secrets.AZURE_WEBAPP_NAME }}.azurewebsites.net/api/migrate" \
+          -H "Content-Type: application/json" \
+          -d '{"token": "${{ secrets.MIGRATION_TOKEN }}"}'
