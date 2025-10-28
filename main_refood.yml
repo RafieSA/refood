@@ -57,35 +57,10 @@ jobs:
         php artisan route:cache
         php artisan view:cache
         
-    - name: Setup web server configuration
+    - name: Create deployment package
       run: |
-        # Create web.config for IIS/Nginx
-        cat > web.config << 'EOF'
-        <?xml version="1.0" encoding="utf-8"?>
-        <configuration>
-          <system.webServer>
-            <rewrite>
-              <rules>
-                <rule name="Imported Rule 1" stopProcessing="true">
-                  <match url="^(.*)/$" ignoreCase="false" />
-                  <conditions>
-                    <add input="{REQUEST_FILENAME}" matchType="IsDirectory" ignoreCase="false" negate="true" />
-                  </conditions>
-                  <action type="Redirect" redirectType="Permanent" url="/{R:1}" />
-                </rule>
-                <rule name="Imported Rule 2" stopProcessing="true">
-                  <match url="^" ignoreCase="false" />
-                  <conditions>
-                    <add input="{REQUEST_FILENAME}" matchType="IsDirectory" ignoreCase="false" negate="true" />
-                    <add input="{REQUEST_FILENAME}" matchType="IsFile" ignoreCase="false" negate="true" />
-                  </conditions>
-                  <action type="Rewrite" url="public/index.php" />
-                </rule>
-              </rules>
-            </rewrite>
-          </system.webServer>
-        </configuration>
-        EOF
+        # Create zip package for deployment
+        zip -r deployment.zip . -x ".git/*" ".github/*" "node_modules/*" "tests/*"
         
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v3
@@ -93,7 +68,7 @@ jobs:
         app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
         slot-name: 'production'
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        package: .
+        package: deployment.zip
         
     - name: Run migrations on Azure
       run: |
