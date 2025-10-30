@@ -422,10 +422,13 @@
             }
         });
         
-        // Close autocomplete on ESC key
+        // Close autocomplete on ESC key OR submit on Enter
         searchInput.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 autocompleteResults.classList.add('hidden');
+            } else if (e.key === 'Enter') {
+                // e.preventDefault(); //
+                searchInput.form.submit(); //
             }
         });
     </script>
