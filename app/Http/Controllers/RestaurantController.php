@@ -53,10 +53,12 @@ class RestaurantController extends Controller
             // Jika tidak ditemukan di database lokal, coba ambil dari Supabase
             if (!$restaurant) {
                 Log::info('Restaurant not found in local DB, trying Supabase', ['id' => $id]);
+                $supabaseUrl = config('services.supabase.url');
+                $supabaseKey = config('services.supabase.key');
                 $response = Http::withHeaders([
-                    'apikey' => env('SUPABASE_KEY'),
-                    'Authorization' => 'Bearer ' . env('SUPABASE_KEY')
-                ])->get(env('SUPABASE_URL') . '/rest/v1/restaurants', [
+                    'apikey' => $supabaseKey,
+                    'Authorization' => 'Bearer ' . $supabaseKey
+                ])->get($supabaseUrl . '/rest/v1/restaurants', [
                     'id' => 'eq.' . $id,
                     'select' => '*'
                 ]);
@@ -122,10 +124,12 @@ class RestaurantController extends Controller
             
             // Jika tidak ditemukan di database lokal, coba ambil dari Supabase
             if (!$restaurant) {
+                $supabaseUrl = config('services.supabase.url');
+                $supabaseKey = config('services.supabase.key');
                 $response = Http::withHeaders([
-                    'apikey' => env('SUPABASE_KEY'),
-                    'Authorization' => 'Bearer ' . env('SUPABASE_KEY')
-                ])->get(env('SUPABASE_URL') . '/rest/v1/restaurants', [
+                    'apikey' => $supabaseKey,
+                    'Authorization' => 'Bearer ' . $supabaseKey
+                ])->get($supabaseUrl . '/rest/v1/restaurants', [
                     'id' => 'eq.' . $id,
                     'select' => '*'
                 ]);
@@ -160,12 +164,16 @@ class RestaurantController extends Controller
         ]);
         
         try {
+            // Get Supabase config
+            $supabaseUrl = config('services.supabase.url');
+            $supabaseKey = config('services.supabase.key');
+            
             // Dapatkan informasi restaurant
             $restaurant = Restaurant::find($id);
             if (!$restaurant) {
                 Log::info('Trying to save claim to Supabase', [
-                    'supabase_url' => env('SUPABASE_URL'),
-                    'key_length' => strlen(env('SUPABASE_KEY')),
+                    'supabase_url' => $supabaseUrl,
+                    'key_length' => strlen($supabaseKey ?? ''),
                     'restaurant_id' => $id,
                     'data' => [
                         'name' => $validated['name'],
@@ -174,9 +182,9 @@ class RestaurantController extends Controller
                     ]
                 ]);
                 $response = Http::withHeaders([
-                    'apikey' => env('SUPABASE_KEY'),
-                    'Authorization' => 'Bearer ' . env('SUPABASE_KEY')
-                ])->get(env('SUPABASE_URL') . '/rest/v1/restaurants', [
+                    'apikey' => $supabaseKey,
+                    'Authorization' => 'Bearer ' . $supabaseKey
+                ])->get($supabaseUrl . '/rest/v1/restaurants', [
                     'id' => 'eq.' . $id,
                     'select' => '*'
                 ]);
@@ -198,15 +206,15 @@ class RestaurantController extends Controller
             
             // Simpan data ke Supabase
             $response = Http::withHeaders([
-                'apikey' => env('SUPABASE_KEY'),
-                'Authorization' => 'Bearer ' . env('SUPABASE_KEY'),
+                'apikey' => $supabaseKey,
+                'Authorization' => 'Bearer ' . $supabaseKey,
                 'Content-Type' => 'application/json',
                 'Prefer' => 'return=minimal'
             ])
             ->withOptions([
                 'verify' => false
             ])
-            ->post(env('SUPABASE_URL') . '/rest/v1/discount_claims', [
+            ->post($supabaseUrl . '/rest/v1/discount_claims', [
                 'restaurant_id' => (string)$id,
                 'name' => $validated['name'],
                 'email' => $validated['email'],
@@ -259,10 +267,12 @@ class RestaurantController extends Controller
 
             // Jika tidak ditemukan di database lokal, coba ambil dari Supabase
             if (!$restaurant) {
+                $supabaseUrl = config('services.supabase.url');
+                $supabaseKey = config('services.supabase.key');
                 $response = Http::withHeaders([
-                    'apikey' => env('SUPABASE_KEY'),
-                    'Authorization' => 'Bearer ' . env('SUPABASE_KEY')
-                ])->get(env('SUPABASE_URL') . '/rest/v1/restaurants', [
+                    'apikey' => $supabaseKey,
+                    'Authorization' => 'Bearer ' . $supabaseKey
+                ])->get($supabaseUrl . '/rest/v1/restaurants', [
                     'id' => 'eq.' . $id,
                     'select' => '*'
                 ]);
