@@ -321,6 +321,9 @@
                 <div>
                     <h4 class="text-2xl font-bold text-green-400 mb-4">ReFood</h4>
                     <p class="text-gray-400">Your gateway to amazing restaurant deals and discounts.</p>
+                    <a href="{{ route('admin.login') }}" class="inline-block mt-4 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded transition">
+                        Login Admin
+                    </a>
                 </div>
                 <div>
                     <h5 class="text-lg font-semibold mb-4">Quick Links</h5>
