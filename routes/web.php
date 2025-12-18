@@ -76,7 +76,7 @@ Route::prefix('super-admin')->group(function () {
 Route::prefix('super-admin')->middleware(['auth:super_admins'])->group(function () {
     Route::get('dashboard', [\App\Http\Controllers\Admin\SuperAdminDashboardController::class, 'index'])->name('super_admin.dashboard');
     Route::resource('admins', \App\Http\Controllers\Admin\SuperAdminController::class);
-    Route::resource('restaurants', \App\Http\Controllers\Admin\RestaurantController::class); // Tambahkan ini
+    Route::resource('restaurants', \App\Http\Controllers\Admin\RestaurantController::class);
     Route::resource('articles', \App\Http\Controllers\Admin\ArticleController::class);
 });
 

@@ -33,3 +33,5 @@ yarn-error.log
 /storage/*.log
 /vendor
 .env
+
+CONTOH_GEMINI.md
