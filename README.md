@@ -282,14 +282,3 @@ refood/
 └── README.md                                # This file
 
 ---
-
-<p align="center">
-  <strong>Dibuat dengan ❤️ untuk mengurangi food waste di Indonesia</strong><br>
-  <sub>REFOOD - Together Against Food Waste</sub>
-</p>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/Made%20with-Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Made with Laravel">
-  <img src="https://img.shields.io/badge/Built%20for-BNSP-green?style=for-the-badge" alt="Built for BNSP">
-  <img src="https://img.shields.io/badge/Status-Production%20Ready-success?style=for-the-badge" alt="Production Ready">
-</p>
